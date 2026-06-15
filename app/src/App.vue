@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AnimatedBackground from './components/AnimatedBackground.vue'
 </script>
 
 <template>
@@ -6,8 +7,12 @@
     <h1>Portfolio Ambre Rat</h1>
   </header>
   <main class="contenu">
+    <AnimatedBackground />
       <div class="gauche">  
-        <img class="photo-profil" src="src/assets/hero.png" alt="Photo de profil">
+        <img v-motion-roll-bottom 
+             class="photo-profil" 
+             src="/app/public/Ambre.jpg" 
+             alt="Photo de profil">
       </div>
       <div class="droite">
         <div class="titre-contenue-droite">
@@ -57,15 +62,18 @@
 }
 
 .gauche {
+  justify-content: center;
+  display: flex;
   width: 450px;
-  background-color: red;
 }
 
 .photo-profil {
-  width: 150px;
-  height: 150px;
+  margin-top: 20px;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
   object-fit: cover;
+  box-shadow: 0 3px 70px rgba(0, 0, 0, 0.3);
 }
 .contenue {
   background-color: yellow;
@@ -73,18 +81,16 @@
 }
 
 .titre-contenue-droite {
-  background-color: green;
 }
 .droite {
   display: flex;
   flex: 1;
   flex-direction: column;
-  background-color: blue;
   overflow-y: auto;
 }
 
 .contenu-droite {
-  background-color: yellow;
+
 }
 
 body {
