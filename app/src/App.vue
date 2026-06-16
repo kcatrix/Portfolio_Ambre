@@ -1,5 +1,33 @@
 <script setup lang="ts">
 import AnimatedBackground from './components/AnimatedBackground.vue'
+import { ref, onMounted, computed } from 'vue'
+
+const videos = ref([])
+
+onMounted(async () => {
+  const response = await fetch('http://localhost:3000/api/videos')
+  videos.value = await response.json()
+})
+
+function lienEmbed(id: string) {
+  return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1`
+}
+
+function playVideo(IdVideo: string) {
+  const url = `https://www.youtube.com/watch?v=${IdVideo}`
+  window.open(url, '_blank')
+}
+
+const montrerShorts = ref(true)
+
+const Videofiltrer = computed(() => {
+  if (montrerShorts.value == true)
+    return videos.value.filter(video => video.short)
+  else
+  {
+    return videos.value.filter(video => !video.short)
+  }
+})
 </script>
 
 <template>
@@ -20,34 +48,23 @@ import AnimatedBackground from './components/AnimatedBackground.vue'
         </div>
         <div class="contenu-droite">
         droite ici
+        <div class="intro">
         <p>Bienvenue sur mon portfolio!</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
-        <p>Contenue pour remplir l'espace</p>
+        <button @click="montrerShorts = !montrerShorts">{{ montrerShorts == true ? 'long' : 'short' }}</button>
+        </div>
+          <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
+            <div v-for="video in Videofiltrer" :key="video.IdVideo" class="video-card" >
+              <div class="video-wrapper" :class="{short: video.short}">
+                <iframe
+                  :src="lienEmbed(video.IdVideo)"
+                  allow="autoplay; encrypted-media"
+                  allowfullscreen
+                  frameborder="0">
+                </iframe>
+                <div class="overlay" @click="playVideo(video.IdVideo)"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
   </main>
@@ -65,6 +82,9 @@ import AnimatedBackground from './components/AnimatedBackground.vue'
   justify-content: center;
   display: flex;
   width: 450px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
 }
 
 .photo-profil {
@@ -78,6 +98,7 @@ import AnimatedBackground from './components/AnimatedBackground.vue'
 .contenue {
   background-color: yellow;
   padding: 10px;
+  overflow-y: auto;
 }
 
 .titre-contenue-droite {
@@ -86,11 +107,54 @@ import AnimatedBackground from './components/AnimatedBackground.vue'
   display: flex;
   flex: 1;
   flex-direction: column;
-  overflow-y: auto;
 }
 
 .contenu-droite {
+}
 
+.video-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.video-container.grille-shorts {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.video-card {
+  transition: transform 0.3s;
+}
+
+.video-card:hover {
+  transform: scale(1.05);
+}
+
+.video-wrapper {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video-wrapper.short {
+  aspect-ratio: 9 / 16;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
 }
 
 body {
