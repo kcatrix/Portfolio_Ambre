@@ -50,12 +50,20 @@ function flip(e: Event) {
           <p class="accroche">Donner du rythme, du sens et du style à vos images.</p>
           <p>Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
         </div>
-
-        <div class="skills-orbite">
+       <div class="skills-orbite">
           <ul class="skills">
-            <li>🎬 Montage & Rythme — Narration dynamique et transitions fluides.</li>
-            <li>🔊 Sound Design — Audio immersif, mixage et traitement précis.</li>
-            <li>✨ Motion Design — Habillage et animations sur-mesure.</li>
+            <li>
+              <div class="skill-titre"><i class="fa-solid fa-film"></i><strong>Montage & Rythme</strong></div>
+              <span class="skill-desc">Narration dynamique et transitions fluides.</span>
+            </li>
+            <li>
+              <div class="skill-titre"><i class="fa-solid fa-volume-high"></i><strong>Sound Design</strong></div>
+              <span class="skill-desc">Audio immersif, mixage et traitement précis.</span>
+            </li>
+            <li>
+              <div class="skill-titre"><i class="fa-solid fa-wand-magic-sparkles"></i><strong>Motion Design</strong></div>
+              <span class="skill-desc">Habillage et animations sur-mesure.</span>
+            </li>
           </ul>
           <div class="logiciels">
             <div class="logiciel" style="--a: 0deg"><img src="/ae.svg" alt="After Effects"></div>
@@ -150,19 +158,47 @@ function flip(e: Event) {
 .skills {
   list-style: none;
   padding: 0;
+  margin: 0;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skills li {
+  border-left: 3px solid #6c5ce7;   /* la barre d'accent */
+  padding: 2px 0 2px 12px;          /* espace entre la barre et le texte */
   text-align: left;
+}
+
+.skill-titre {
+  display: flex;       /* icône + titre sur la même ligne */
+  align-items: center;
+  gap: 8px;
+}
+
+.skill-titre i {
+  color: #6c5ce7;
+  font-size: 16px;
+}
+
+.skills strong {
   font-size: 14px;
-  max-width: 230px;
+  color: #1a1a1a;
+}
+
+.skill-desc {
+  display: block;      /* passe à la ligne sous le titre */
+  font-size: 13px;
+  color: #777;
+  line-height: 1.4;
+  margin-top: 2px;
 }
 
 .skills-orbite {
   display: flex;
   align-items: center;
   gap: 16px;
-}
-
-.skills li {
-  margin-bottom: 10px;
 }
 
 .photo-profil {
