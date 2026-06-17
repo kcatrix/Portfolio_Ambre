@@ -50,7 +50,7 @@ const Videofiltrer = computed(() => {
         droite ici
         <div class="intro">
         <p>Bienvenue sur mon portfolio!</p>
-        <button @click="montrerShorts = !montrerShorts">{{ montrerShorts == true ? 'long' : 'short' }}</button>
+        <button class="btn-filtre" @click="montrerShorts = !montrerShorts">{{ montrerShorts == true ? 'long' : 'short' }}</button>
         </div>
           <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
             <div v-for="video in Videofiltrer" :key="video.IdVideo" class="video-card" >
@@ -171,6 +171,16 @@ header {
 
 h1 {
   color: white;
+}
+
+.btn-filtre {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s;
 }
 
 #app {
