@@ -81,13 +81,15 @@ function flip(e: Event) {
       </div>
       <div class="droite">
         <div class="titre-contenue-droite">
-          <h2>Mes créations</h2>
-          <hr class="separateur">
+        <h2>Mes créations</h2>
+        <div class="segment" :class="{ 'sur-videos': !montrerShorts }">
+          <div class="indicateur"></div>
+          <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
+          <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
         </div>
+      </div>
         <div class="contenu-droite">
-        <div class="intro">
-        <button class="btn-filtre" @click="montrerShorts = !montrerShorts">{{ montrerShorts == true ? 'long' : 'short' }}</button>
-        </div>
+        <hr class="separateur">
         <Transition name="video" mode="out-in" appear>
           <div class="video-container" v-if="Videofiltrer.length" :class="{ 'grille-shorts': montrerShorts }" :key="montrerShorts">
             <div v-for="video in Videofiltrer" :key="video.IdVideo" class="video-card" >
@@ -186,6 +188,50 @@ function flip(e: Event) {
 }
 
 .titre-contenue-droite {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.segment {
+  position: relative;
+  display: inline-flex;
+  padding: 4px;
+  background: #f0f0f0;
+  border-radius: 999px;
+}
+
+.indicateur {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: 90px;
+  background: #6c5ce7;
+  border-radius: 999px;
+  transition: transform 0.28s cubic-bezier(.4, 0, .2, 1);
+}
+
+.segment.sur-videos .indicateur {
+  transform: translateX(90px);
+}
+
+.opt {
+  position: relative;
+  z-index: 1;
+  width: 90px;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.opt.actif {
+  color: white;
 }
 .droite {
   display: flex;
