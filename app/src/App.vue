@@ -41,27 +41,29 @@ function flip(e: Event) {
 <template>
   <main class="contenu">
     <AnimatedBackground />
-      <div class="gauche">  
-        <img class="photo-profil" 
-             src="/app/public/Ambre.jpg" 
-             alt="Photo de profil"
-             @click="flip">
-        <div class="socials">
-          <a href="https://x.com/Sorc_Montage?s=20" target="_blank" rel="noopener" class="social">
-            <i class="fa-brands fa-x-twitter"></i>
-          </a>
-          <a href="https://www.youtube.com/@SorcMontage" target="_blank" rel="noopener" class="social">
-            <i class="fa-brands fa-youtube"></i>
-          </a>
-          <a href="https://www.instagram.com/sorc.montage/" target="_blank" rel="noopener" class="social">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          <a href="https://discord.gg/INVITATION" target="_blank" rel="noopener" class="social">
-            <i class="fa-brands fa-discord"></i>
-          </a>
-          <a href="mailto:ambre.rat2007@gmail.com" class="social">
-            
-          </a>
+      <div class="gauche">
+        <div class="orbite-zone">
+          <img class="photo-profil"
+               src="/app/public/Ambre.jpg"
+               alt="Photo de profil"
+               @click="flip">
+          <div class="orbite">
+            <a href="https://x.com/Sorc_Montage?s=20" target="_blank" rel="noopener" class="social">
+              <i class="fa-brands fa-x-twitter"></i>
+            </a>
+            <a href="https://www.youtube.com/@SorcMontage" target="_blank" rel="noopener" class="social">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://www.instagram.com/sorc.montage/" target="_blank" rel="noopener" class="social">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://discord.gg/INVITATION" target="_blank" rel="noopener" class="social">
+              <i class="fa-brands fa-discord"></i>
+            </a>
+            <a href="mailto:ambre.rat2007@gmail.com" class="social">
+              <i class="fa-regular fa-envelope"></i>
+            </a>
+          </div>
         </div>
       </div>
       <div class="droite">
@@ -228,30 +230,64 @@ h1 {
   transition: all 0.25s;
 }
 
-.socials {
+/* --- Logos en orbite autour de la photo --- */
+.orbite-zone {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin-top: 20px;
   display: flex;
-  gap: 14px;
+  align-items: center;
   justify-content: center;
 }
 
+/* L'anneau qui tourne en continu */
+.orbite {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: orbite-tourner 22s linear infinite;
+}
+
+@keyframes orbite-tourner {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbite-contre {
+  to { transform: rotate(-360deg); }
+}
+
 .social {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 44px;
   height: 44px;
+  margin: -22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.1);
-  transition: all 0.25s;
   text-decoration: none;
+  pointer-events: auto;
 }
 
-.social:hover {
-  transform: translateY(-3px);
-}
+/* Chaque logo placé sur le cercle (rayon 175px), sans inclinaison */
+.social:nth-child(1) { transform: rotate(0deg)   translateY(-175px) rotate(0deg); }
+.social:nth-child(2) { transform: rotate(72deg)  translateY(-175px) rotate(-72deg); }
+.social:nth-child(3) { transform: rotate(144deg) translateY(-175px) rotate(-144deg); }
+.social:nth-child(4) { transform: rotate(216deg) translateY(-175px) rotate(-216deg); }
+.social:nth-child(5) { transform: rotate(288deg) translateY(-175px) rotate(-288deg); }
 
+/* L'icône contre-tourne pour rester bien droite */
 .social i {
   font-size: 24px;
+  animation: orbite-contre 22s linear infinite;
+}
+
+.social i:hover {
+  color: #fff;
 }
 
 #app {
