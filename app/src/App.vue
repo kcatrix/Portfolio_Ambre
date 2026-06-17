@@ -52,7 +52,8 @@ const Videofiltrer = computed(() => {
         <p>Bienvenue sur mon portfolio!</p>
         <button class="btn-filtre" @click="montrerShorts = !montrerShorts">{{ montrerShorts == true ? 'long' : 'short' }}</button>
         </div>
-          <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
+        <Transition name="video" mode="out-in">
+          <div class="video-container" :class="{ 'grille-shorts': montrerShorts }":key="montrerShorts">
             <div v-for="video in Videofiltrer" :key="video.IdVideo" class="video-card" >
               <div class="video-wrapper" :class="{short: video.short}">
                 <iframe
@@ -65,6 +66,7 @@ const Videofiltrer = computed(() => {
               </div>
             </div>
           </div>
+        </Transition>
         </div>
       </div>
   </main>
@@ -149,6 +151,16 @@ const Videofiltrer = computed(() => {
   height: 100%;
   display: block;
   border: none;
+}
+
+.video-enter-active,
+.video-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.video-enter-from,
+.video-leave-to {
+  opacity: 0;
 }
 
 .overlay {
