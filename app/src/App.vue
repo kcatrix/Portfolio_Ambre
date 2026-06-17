@@ -60,7 +60,7 @@ function flip(e: Event) {
             <i class="fa-brands fa-discord"></i>
           </a>
           <a href="mailto:ambre.rat2007@gmail.com" class="social">
-            
+            <i class="fa-regular fa-envelope"></i>
           </a>
         </div>
       </div>

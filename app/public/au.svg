@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <rect width="240" height="240" rx="42" fill="#00005B"/>
+  <rect x="9" y="9" width="222" height="222" rx="34" fill="none" stroke="#00E4BB" stroke-width="6"/>
+  <text x="120" y="128" fill="#00E4BB" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="108" text-anchor="middle" dominant-baseline="central">Au</text>
+</svg>
