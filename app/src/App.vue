@@ -49,16 +49,19 @@ function flip(e: Event) {
         <div class="intro">
           <p class="accroche">Donner du rythme, du sens et du style à vos images.</p>
           <p>Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
+        </div>
+
+        <div class="skills-orbite">
           <ul class="skills">
             <li>🎬 Montage & Rythme — Narration dynamique et transitions fluides.</li>
             <li>🔊 Sound Design — Audio immersif, mixage et traitement précis.</li>
             <li>✨ Motion Design — Habillage et animations sur-mesure.</li>
           </ul>
-        </div>
-        <div class="logiciels">
-          <div class="logiciel" style="--a: 0deg"><img src="/ae.svg" alt="After Effects"></div>
-          <div class="logiciel" style="--a: 120deg"><img src="/pr.svg" alt="Premiere Pro"></div>
-          <div class="logiciel" style="--a: 240deg"><img src="/au.svg" alt="Audition"></div>
+          <div class="logiciels">
+            <div class="logiciel" style="--a: 0deg"><img src="/ae.svg" alt="After Effects"></div>
+            <div class="logiciel" style="--a: 120deg"><img src="/pr.svg" alt="Premiere Pro"></div>
+            <div class="logiciel" style="--a: 240deg"><img src="/au.svg" alt="Audition"></div>
+          </div>
         </div>
         <hr class="separateur">
         <div class="socials">
@@ -147,6 +150,13 @@ function flip(e: Event) {
   padding: 0;
   text-align: left;
   font-size: 14px;
+  max-width: 230px;
+}
+
+.skills-orbite {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .skills li {
@@ -348,8 +358,9 @@ h1 {
 
 .logiciels {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
   animation: orbite 14s linear infinite;
 }
 
