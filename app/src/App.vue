@@ -40,12 +40,27 @@ function flip(e: Event) {
 
 <template>
   <main class="contenu">
-    <AnimatedBackground />
       <div class="gauche">  
         <img class="photo-profil" 
              src="/app/public/Ambre.jpg" 
              alt="Photo de profil"
              @click="flip">
+        <hr class="separateur">
+        <div class="intro">
+          <p class="accroche">Donner du rythme, du sens et du style à vos images.</p>
+          <p>Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
+          <ul class="skills">
+            <li>🎬 Montage & Rythme — Narration dynamique et transitions fluides.</li>
+            <li>🔊 Sound Design — Audio immersif, mixage et traitement précis.</li>
+            <li>✨ Motion Design — Habillage et animations sur-mesure.</li>
+          </ul>
+        </div>
+        <div class="logiciels">
+          <div class="logiciel" style="--a: 0deg"><img src="/ae.svg" alt="After Effects"></div>
+          <div class="logiciel" style="--a: 120deg"><img src="/pr.svg" alt="Premiere Pro"></div>
+          <div class="logiciel" style="--a: 240deg"><img src="/au.svg" alt="Audition"></div>
+        </div>
+        <hr class="separateur">
         <div class="socials">
           <a href="https://x.com/Sorc_Montage?s=20" target="_blank" rel="noopener" class="social">
             <i class="fa-brands fa-x-twitter"></i>
@@ -66,7 +81,8 @@ function flip(e: Event) {
       </div>
       <div class="droite">
         <div class="titre-contenue-droite">
-          <h2>Bienvenue sur mon portfolio!</h2>
+          <h2>Mes créations</h2>
+          <hr class="separateur">
         </div>
         <div class="contenu-droite">
         <div class="intro">
@@ -112,10 +128,34 @@ function flip(e: Event) {
   perspective: 800px;
 }
 
+.intro {
+  max-width: 340px;
+  text-align: center;
+  line-height: 1.6;
+  color: #000000;
+}
+
+.accroche {
+  font-size: 18px;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.skills {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  font-size: 14px;
+}
+
+.skills li {
+  margin-bottom: 10px;
+}
+
 .photo-profil {
   margin-top: 20px;
-  width: 250px;
-  height: 250px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 3px 70px rgba(0, 0, 0, 0.3);
@@ -252,6 +292,59 @@ h1 {
 
 .social i {
   font-size: 24px;
+}
+
+.logiciels {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  animation: orbite 14s linear infinite;
+}
+
+.logiciel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin: -30px;
+  transform: rotate(var(--a)) translate(50px) rotate(calc(-1 * var(--a)));
+}
+
+.logiciel img {
+  width: 100%;
+  height: 100%;
+  animation: orbite-inverse 14s linear infinite;
+}
+
+.logiciels:hover {
+  animation-play-state: paused;
+}
+
+.logiciels:hover .logiciel img {
+  animation-play-state: paused;
+}
+
+.logiciel img {
+  transition: filter 0.3s;
+}
+
+.logiciel img:hover {
+  filter:
+    drop-shadow(0 0 6px rgba(255, 215, 0, 0.95))
+    drop-shadow(0 0 16px rgba(255, 195, 0, 0.8))
+    drop-shadow(0 0 32px rgba(255, 170, 0, 0.6));
+}
+
+@keyframes orbite { to { transform: rotate(360deg); } }
+@keyframes orbite-inverse { to { transform: rotate(-360deg); } }
+
+.separateur {
+  border: none;
+  height: 2px;
+  width: 80%;
+  margin: 20px 0;
+  background: linear-gradient(to right, transparent, rgba(108, 92, 231, 0.6), transparent);
 }
 
 #app {
