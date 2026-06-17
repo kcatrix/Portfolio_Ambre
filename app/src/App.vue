@@ -120,6 +120,7 @@ function flip(e: Event) {
   display: flex;
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
 }
 
 .gauche {
@@ -130,6 +131,7 @@ function flip(e: Event) {
   top: 0;
   align-self: flex-start;
   perspective: 800px;
+  position: sticky;
 }
 
 .intro {
@@ -251,7 +253,6 @@ function flip(e: Event) {
   display: flex;
   flex: 1;
   flex-direction: column;
-  overflow-y: auto;
 }
 
 .contenu-droite {
