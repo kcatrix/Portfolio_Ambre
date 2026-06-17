@@ -88,7 +88,7 @@ function flip(e: Event) {
           <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
         </div>
       </div>
-        <div class="contenu-droite">
+        <div>
         <hr class="separateur">
         <Transition name="video" mode="out-in" appear>
           <div class="video-container" v-if="Videofiltrer.length" :class="{ 'grille-shorts': montrerShorts }" :key="montrerShorts">
@@ -124,7 +124,6 @@ function flip(e: Event) {
   flex-direction: column;
   align-items: center;
   width: 450px;
-  position: sticky;
   top: 0;
   align-self: flex-start;
   perspective: 800px;
@@ -189,8 +188,13 @@ function flip(e: Event) {
 
 .titre-contenue-droite {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  padding: 0 20px;
+}
+
+.droite .separateur {
+  margin-top: 2px;
 }
 
 .segment {
@@ -237,6 +241,7 @@ function flip(e: Event) {
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .contenu-droite {
@@ -298,6 +303,7 @@ function flip(e: Event) {
 
 body {
   margin: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 h1 {
