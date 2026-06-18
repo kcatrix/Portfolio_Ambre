@@ -14,7 +14,7 @@ function setClipboard(text: string) {
 
 function flip(e: Event) {
   (e.currentTarget as HTMLElement).animate(
-    [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(360deg)' }],
+    [{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(360deg)' }],
     { duration: 600, easing: 'ease' }
   )
 }
@@ -23,7 +23,7 @@ function flip(e: Event) {
 <template>
   <div class="gauche">
     <img class="photo-profil"
-         src="/app/public/Ambre.jpg"
+         src="/Ambre.jpg"
          alt="Photo de profil"
          @click="flip">
     <hr class="separateur">
