@@ -18,6 +18,16 @@ function flip(e: Event) {
     { duration: 600, easing: 'ease' }
   )
 }
+
+function brillance(e: Event) {
+  (e.currentTarget as HTMLElement).animate(
+    [
+      { backgroundPosition: '100% 0' },
+      { backgroundPosition: '0% 0' }
+    ],
+    { duration: 800, easing: 'ease-in-out' }
+  )
+}
 </script>
 
 <template>
@@ -28,7 +38,7 @@ function flip(e: Event) {
          @click="flip">
     <hr class="separateur">
     <div class="intro">
-      <p class="accroche">Donner du <span>rythme</span>, du <span>sens</span> et du <span>style</span> à vos images.</p>
+      <p class="accroche">Donner du <span>rythme</span>, du <span>sens</span> et du <span class="mot-anime" @click="brillance">style</span> à vos images.</p>
       <p class="bio">Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
     </div>
     <div class="skills-orbite">
@@ -101,6 +111,34 @@ function flip(e: Event) {
   line-height: 1.4;
   color: var(--text-fort);
   margin: 0 0 12px;
+}
+
+.accroche .mot-anime {
+  display: inline-block;          /* indispensable (comme vu avant) */
+  cursor: pointer;
+  background: linear-gradient(
+    120deg,
+    var(--accent) 0%,
+    var(--accent) 45%,
+    rgba(255, 255, 255, 0.9) 50%, /* la bande de lumière */
+    var(--accent) 55%,
+    var(--accent) 100%
+  );
+  background-size: 250% 100%;     /* dégradé plus large que le mot = place pour glisser */
+  background-position: 0% 0;      /* au repos, la bande est hors champ */
+  -webkit-background-clip: text;  /* le dégradé est "découpé" à la forme des lettres */
+  background-clip: text;
+  color: transparent;             /* le texte devient transparent → on voit le dégradé */
+  -webkit-text-fill-color: transparent;  /* pour Safari */
+}
+
+.mot-anime {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.mot-anime:hover {
+  transform: scale(1.05);
 }
 
 .accroche span {
