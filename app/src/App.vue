@@ -1,6 +1,25 @@
 <script setup lang="ts">
 import AnimatedBackground from './components/AnimatedBackground.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+
+/* --- Thèmes de couleur ---
+   Pour ajouter un thème : ajoute une entrée ici ET le bloc
+   [data-theme="..."] correspondant dans src/themes.css. */
+const themes = [
+  { id: 'violet',   nom: 'Violet',   couleur: '#6c5ce7' },
+  { id: 'ocean',    nom: 'Océan',    couleur: '#0984e3' },
+  { id: 'emeraude', nom: 'Émeraude', couleur: '#00b894' },
+  { id: 'corail',   nom: 'Corail',   couleur: '#e17055' },
+  { id: 'rose',     nom: 'Rose',     couleur: '#e84393' },
+  { id: 'ambre',    nom: 'Ambre',    couleur: '#f39c12' },
+]
+
+const themeActif = ref(localStorage.getItem('theme') || 'violet')
+
+watch(themeActif, (id) => {
+  document.documentElement.setAttribute('data-theme', id)
+  localStorage.setItem('theme', id)
+}, { immediate: true })
 
 const videos = ref([])
 const chargees = ref(new Set())
@@ -49,8 +68,20 @@ function flip(e: Event) {
 </script>
 
 <template>
+  <div class="theme-switcher">
+    <button
+      v-for="t in themes"
+      :key="t.id"
+      class="theme-dot"
+      :class="{ actif: themeActif === t.id }"
+      :style="{ background: t.couleur }"
+      :title="t.nom"
+      :aria-label="`Thème ${t.nom}`"
+      @click="themeActif = t.id">
+    </button>
+  </div>
   <main class="contenu">
-      <div class="gauche">  
+      <div class="gauche">
         <img class="photo-profil" 
              src="/app/public/Ambre.jpg" 
              alt="Photo de profil"
@@ -168,17 +199,17 @@ function flip(e: Event) {
   font-weight: 600;
   font-style: normal;   /* on enlève l'italique pour un rendu plus net */
   line-height: 1.4;
-  color: #1a1a1a;
+  color: var(--text-fort);
   margin: 0 0 12px;
 }
 
 .accroche span {
-  color: #6c5ce7;        /* les mots-clés en violet */
+  color: var(--accent);        /* les mots-clés à la couleur d'accent */
 }
 
 .bio {
   font-size: 14px;
-  color: #777;           /* bio plus discrète */
+  color: var(--text-doux);     /* bio plus discrète */
   line-height: 1.6;
   margin: 0;
 }
@@ -194,7 +225,7 @@ function flip(e: Event) {
 }
 
 .skills li {
-  border-left: 3px solid #6c5ce7;   /* la barre d'accent */
+  border-left: 3px solid var(--accent);   /* la barre d'accent */
   padding: 2px 0 2px 12px;          /* espace entre la barre et le texte */
   text-align: left;
 }
@@ -206,19 +237,19 @@ function flip(e: Event) {
 }
 
 .skill-titre i {
-  color: #6c5ce7;
+  color: var(--accent);
   font-size: 16px;
 }
 
 .skills strong {
   font-size: 14px;
-  color: #1a1a1a;
+  color: var(--text-fort);
 }
 
 .skill-desc {
   display: block;      /* passe à la ligne sous le titre */
   font-size: 13px;
-  color: #777;
+  color: var(--text-doux);
   line-height: 1.4;
   margin-top: 2px;
 }
@@ -277,7 +308,7 @@ function flip(e: Event) {
   width: fit-content;
   margin: 0 auto;
   padding: 4px;
-  background: #f0f0f0;
+  background: var(--surface);
   border-radius: 999px;
 }
 
@@ -287,7 +318,7 @@ function flip(e: Event) {
   bottom: 4px;
   left: 4px;
   width: 90px;
-  background: #6c5ce7;
+  background: var(--accent);
   border-radius: 999px;
   transition: transform 0.28s cubic-bezier(.4, 0, .2, 1);
 }
@@ -306,12 +337,12 @@ function flip(e: Event) {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #666;
+  color: var(--text-doux);
   transition: color 0.2s;
 }
 
 .opt.actif {
-  color: white;
+  color: var(--on-accent);
 }
 .droite {
   display: flex;
@@ -417,22 +448,22 @@ h1 {
   align-items: center;      /* alignés verticalement au centre */
   gap: 10px;                /* espace entre eux */
   padding: 8px 8px 8px 16px;
-  background: #f0eefe;      /* violet très clair */
-  border: 1px solid rgba(108, 92, 231, 0.2);
+  background: var(--accent-soft);      /* accent très clair */
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
   border-radius: 999px;     /* coins ultra-arrondis = pilule */
   cursor: pointer;
   family: inherit;               /* hérite de la police du parent */
 }
 
 .mail-icone {
-  color: #6c5ce7;
+  color: var(--accent);
   font-size: 16px;
 }
 
 .mail-adresse {
   font-size: 14px;
   font-weight: 500;
-  color: #1a1a1a;
+  color: var(--text-fort);
 }
 
 .mail-copier {
@@ -443,14 +474,14 @@ h1 {
   height: 32px;
   border: none;
   border-radius: 50%;       /* cercle parfait */
-  background: #6c5ce7;
-  color: white;             /* l'icône hérite de cette couleur */
+  background: var(--accent);
+  color: var(--on-accent);  /* l'icône hérite de cette couleur */
   font-size: 13px;
   cursor: pointer;
 }
 
 .mail-chip:hover {
-  border-color: rgba(108, 92, 231, 0.5);
+  border-color: rgba(var(--accent-rgb), 0.5);
   transform: translateY(-2px);
 }
 
@@ -463,7 +494,7 @@ h1 {
 }
 
 .mail-copier.copie {
-  background: #00b894;
+  background: var(--succes);
 }
 
 .social:hover {
@@ -525,13 +556,46 @@ h1 {
   height: 2px;
   width: 80%;
   margin: 20px auto;
-  background: linear-gradient(to right, transparent, rgba(108, 92, 231, 0.6), transparent);
+  background: linear-gradient(to right, transparent, rgba(var(--accent-rgb), 0.6), transparent);
 }
 
 #app {
   height: 100dvh;
   display: flex;
   flex-direction: column;
+}
+
+.theme-switcher {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.theme-dot {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.theme-dot:hover {
+  transform: scale(1.15);
+}
+
+.theme-dot.actif {
+  border-color: var(--text-fort);
+  transform: scale(1.1);
 }
 
 </style>

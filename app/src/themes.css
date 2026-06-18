@@ -1,0 +1,59 @@
+/* ============================================================
+   THÈMES DE COULEUR
+   ------------------------------------------------------------
+   Pour changer le thème : ajoute l'attribut data-theme sur la
+   balise <html> ou <body>, ex : <body data-theme="ocean">.
+   Le sélecteur en haut à droite du site le fait automatiquement.
+
+   Pour CRÉER un nouveau thème : copie un bloc [data-theme="..."]
+   ci-dessous, change le nom et les couleurs. Seules ces
+   variables sont à définir, tout le reste suit automatiquement.
+   ============================================================ */
+
+:root {
+  /* Couleur principale (accent) */
+  --accent: #6c5ce7;
+  --accent-rgb: 108, 92, 231; /* même couleur que --accent, en RGB (pour les transparences) */
+  --accent-soft: #f0eefe;     /* version très claire de l'accent */
+  --on-accent: #ffffff;       /* texte/icône posé SUR l'accent */
+
+  /* Textes */
+  --text-fort: #1a1a1a;       /* titres, texte important */
+  --text-doux: #777777;       /* texte secondaire, descriptions */
+
+  /* Surfaces */
+  --surface: #f0f0f0;         /* fonds neutres (toggle, etc.) */
+
+  /* États */
+  --succes: #00b894;          /* confirmation (ex : copié) */
+}
+
+[data-theme="ocean"] {
+  --accent: #0984e3;
+  --accent-rgb: 9, 132, 227;
+  --accent-soft: #e8f3fd;
+}
+
+[data-theme="emeraude"] {
+  --accent: #00b894;
+  --accent-rgb: 0, 184, 148;
+  --accent-soft: #e6f8f3;
+}
+
+[data-theme="corail"] {
+  --accent: #e17055;
+  --accent-rgb: 225, 112, 85;
+  --accent-soft: #fdeee9;
+}
+
+[data-theme="rose"] {
+  --accent: #e84393;
+  --accent-rgb: 232, 67, 147;
+  --accent-soft: #fde9f2;
+}
+
+[data-theme="ambre"] {
+  --accent: #f39c12;
+  --accent-rgb: 243, 156, 18;
+  --accent-soft: #fdf3e1;
+}
