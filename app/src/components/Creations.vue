@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import VideoCard from './VideoCard.vue'
+import AvisPreview from './AvisPreview.vue'
 
 interface Video {
   IdVideo: string
@@ -34,6 +35,7 @@ const Videofiltrer = computed(() =>
         <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
         <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
       </div>
+        <AvisPreview />
       <Transition name="video" mode="out-in" appear>
         <div class="video-container" v-if="Videofiltrer.length" :class="{ 'grille-shorts': montrerShorts }" :key="String(montrerShorts)">
           <VideoCard v-for="video in Videofiltrer" :key="video.IdVideo" :video="video" />
@@ -48,6 +50,7 @@ const Videofiltrer = computed(() =>
   display: flex;
   flex: 1;
   flex-direction: column;
+  min-width: 0;  
 }
 
 .titre-contenue-droite {
@@ -64,7 +67,7 @@ const Videofiltrer = computed(() =>
   display: flex;
   width: fit-content;
   margin: 0 auto;
-  padding: 4px;
+  padding: 5px;
   background: var(--surface);
   border-radius: 999px;
 }
@@ -106,7 +109,7 @@ const Videofiltrer = computed(() =>
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  padding: 20px;
+  padding: 10px;
 }
 
 .video-container.grille-shorts {
