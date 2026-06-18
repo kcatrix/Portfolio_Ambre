@@ -45,34 +45,39 @@ watch(bgActif, (id) => {
 
 <template>
   <div class="theme-switcher">
-    <div class="switch-row">
-      <span class="switch-label">Couleur</span>
-      <div class="dots">
-        <button
-          v-for="t in themes"
-          :key="t.id"
-          class="dot"
-          :class="{ actif: themeActif === t.id }"
-          :style="{ background: t.couleur }"
-          :title="t.nom"
-          :aria-label="`Couleur ${t.nom}`"
-          @click="themeActif = t.id">
-        </button>
+    <button class="trigger" aria-label="Changer le thème" aria-haspopup="true">
+      <i class="fa-solid fa-palette"></i>
+    </button>
+    <div class="panel">
+      <div class="switch-row">
+        <span class="switch-label">Couleur</span>
+        <div class="dots">
+          <button
+            v-for="t in themes"
+            :key="t.id"
+            class="dot"
+            :class="{ actif: themeActif === t.id }"
+            :style="{ background: t.couleur }"
+            :title="t.nom"
+            :aria-label="`Couleur ${t.nom}`"
+            @click="themeActif = t.id">
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="switch-row">
-      <span class="switch-label">Fond</span>
-      <div class="dots">
-        <button
-          v-for="b in backgrounds"
-          :key="b.id"
-          class="dot"
-          :class="{ actif: bgActif === b.id }"
-          :style="{ background: b.couleur }"
-          :title="b.nom"
-          :aria-label="`Fond ${b.nom}`"
-          @click="bgActif = b.id">
-        </button>
+      <div class="switch-row">
+        <span class="switch-label">Fond</span>
+        <div class="dots">
+          <button
+            v-for="b in backgrounds"
+            :key="b.id"
+            class="dot"
+            :class="{ actif: bgActif === b.id }"
+            :style="{ background: b.couleur }"
+            :title="b.nom"
+            :aria-label="`Fond ${b.nom}`"
+            @click="bgActif = b.id">
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -84,14 +89,62 @@ watch(bgActif, (id) => {
   top: 16px;
   right: 16px;
   z-index: 100;
+  /* zone de survol un peu plus large que le bouton pour déclencher tôt */
+  padding-bottom: 12px;
+}
+
+/* Le bouton compact, toujours visible */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s, background 0.3s ease;
+}
+
+.theme-switcher:hover .trigger,
+.theme-switcher:focus-within .trigger {
+  transform: rotate(20deg) scale(1.05);
+}
+
+/* Le panneau déployable */
+.panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 10px 12px;
-  background: rgba(var(--panel-rgb), 0.75);
+  background: rgba(var(--panel-rgb), 0.85);
   backdrop-filter: blur(8px);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+
+  /* état replié */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+}
+
+.theme-switcher:hover .panel,
+.theme-switcher:focus-within .panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .switch-row {
