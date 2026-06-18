@@ -4,6 +4,7 @@ import { ref, onMounted, computed } from 'vue'
 
 const videos = ref([])
 const chargees = ref(new Set())
+const copie = ref(false)
 
 onMounted(async () => {
   const response = await fetch('http://localhost:3000/api/videos')
@@ -17,6 +18,15 @@ function lienEmbed(id: string) {
 function playVideo(IdVideo: string) {
   const url = `https://www.youtube.com/watch?v=${IdVideo}`
   window.open(url, '_blank')
+}
+
+function setClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    copie.value = true
+    setTimeout(() => { copie.value = false }, 2000)
+  }).catch(err => {
+    console.error('Erreur lors de la copie : ', err)
+  })
 }
 
 const montrerShorts = ref(true)
@@ -47,8 +57,10 @@ function flip(e: Event) {
              @click="flip">
         <hr class="separateur">
         <div class="intro">
-          <p class="accroche">Donner du rythme, du sens et du style à vos images.</p>
-          <p>Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
+          <div class="intro">
+            <p class="accroche">Donner du <span>rythme</span>, du <span>sens</span> et du <span>style</span> à vos images.</p>
+            <p class="bio">Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
+          </div>
         </div>
        <div class="skills-orbite">
           <ul class="skills">
@@ -85,22 +97,26 @@ function flip(e: Event) {
           <a href="https://discord.gg/INVITATION" target="_blank" rel="noopener" class="social">
             <i class="fa-brands fa-discord"></i>
           </a>
-          <a href="mailto:ambre.rat2007@gmail.com" class="social">
-            <i class="fa-regular fa-envelope"></i>
-          </a>
         </div>
+        <button @click="setClipboard('ambre.rat2007@gmail.com')" class="mail-chip">
+          <i class="fa-regular fa-envelope mail-icone"></i>
+          <span class="mail-adresse">ambre.rat2007@gmail.com</span>
+          <span class="mail-copier" :class="{ copie: copie }">
+            <i :class="copie ? 'fa-solid fa-check' : 'fa-regular fa-copy'"></i>
+          </span>
+        </button>
       </div>
       <div class="droite">
         <div class="titre-contenue-droite">
         <h2>Mes créations</h2>
+      </div>
+        <div>
+        <hr class="separateur">
         <div class="segment" :class="{ 'sur-videos': !montrerShorts }">
           <div class="indicateur"></div>
           <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
           <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
         </div>
-      </div>
-        <div>
-        <hr class="separateur">
         <Transition name="video" mode="out-in" appear>
           <div class="video-container" v-if="Videofiltrer.length" :class="{ 'grille-shorts': montrerShorts }" :key="montrerShorts">
             <div v-for="video in Videofiltrer" :key="video.IdVideo" class="video-card" >
@@ -145,14 +161,26 @@ function flip(e: Event) {
 .intro {
   max-width: 340px;
   text-align: center;
-  line-height: 1.6;
-  color: #000000;
 }
 
 .accroche {
-  font-size: 18px;
+  font-size: 21px;
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;   /* on enlève l'italique pour un rendu plus net */
+  line-height: 1.4;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.accroche span {
+  color: #6c5ce7;        /* les mots-clés en violet */
+}
+
+.bio {
+  font-size: 14px;
+  color: #777;           /* bio plus discrète */
+  line-height: 1.6;
+  margin: 0;
 }
 
 .skills {
@@ -235,9 +263,7 @@ function flip(e: Event) {
 }
 
 .titre-contenue-droite {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: center;
   padding: 0 20px;
 }
 
@@ -247,7 +273,9 @@ function flip(e: Event) {
 
 .segment {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
+  margin: 0 auto;
   padding: 4px;
   background: #f0f0f0;
   border-radius: 999px;
@@ -380,9 +408,62 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.1);
   transition: all 0.25s;
   text-decoration: none;
+}
+
+.mail-chip {
+  display: inline-flex;     /* les 3 éléments en ligne */
+  align-items: center;      /* alignés verticalement au centre */
+  gap: 10px;                /* espace entre eux */
+  padding: 8px 8px 8px 16px;
+  background: #f0eefe;      /* violet très clair */
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  border-radius: 999px;     /* coins ultra-arrondis = pilule */
+  cursor: pointer;
+  family: inherit;               /* hérite de la police du parent */
+}
+
+.mail-icone {
+  color: #6c5ce7;
+  font-size: 16px;
+}
+
+.mail-adresse {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.mail-copier {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;       /* cercle parfait */
+  background: #6c5ce7;
+  color: white;             /* l'icône hérite de cette couleur */
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mail-chip:hover {
+  border-color: rgba(108, 92, 231, 0.5);
+  transform: translateY(-2px);
+}
+
+.mail-copier:hover {
+  transform: scale(1.08);   /* le bouton grossit un peu */
+}
+
+.mail-chip:active {
+  transform: scale(0.98);
+}
+
+.mail-copier.copie {
+  background: #00b894;
 }
 
 .social:hover {
@@ -443,7 +524,7 @@ h1 {
   border: none;
   height: 2px;
   width: 80%;
-  margin: 20px 0;
+  margin: 20px auto;
   background: linear-gradient(to right, transparent, rgba(108, 92, 231, 0.6), transparent);
 }
 
