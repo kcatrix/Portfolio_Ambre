@@ -1,59 +1,87 @@
 /* ============================================================
    THÈMES DE COULEUR
    ------------------------------------------------------------
-   Pour changer le thème : ajoute l'attribut data-theme sur la
-   balise <html> ou <body>, ex : <body data-theme="ocean">.
-   Le sélecteur en haut à droite du site le fait automatiquement.
+   Deux réglages INDÉPENDANTS et combinables :
 
-   Pour CRÉER un nouveau thème : copie un bloc [data-theme="..."]
-   ci-dessous, change le nom et les couleurs. Seules ces
-   variables sont à définir, tout le reste suit automatiquement.
+   1. data-theme  -> la couleur d'ACCENT (violet, océan, ...)
+   2. data-bg     -> le FOND du site + les gris (surface, textes)
+
+   Ex : <html data-theme="ocean" data-bg="sombre">
+   Les deux sélecteurs en haut à droite du site le font tout seuls.
+
+   Pour AJOUTER une couleur d'accent : copie un bloc
+   [data-theme="..."], change le nom + les 2 valeurs.
+   Pour AJOUTER un fond : copie un bloc [data-bg="..."].
+   Pense à ajouter l'entrée correspondante dans App.vue
+   (tableaux `themes` / `backgrounds`) pour la pastille.
    ============================================================ */
 
 :root {
-  /* Couleur principale (accent) */
+  /* --- Accent (défaut : violet) --- */
   --accent: #6c5ce7;
-  --accent-rgb: 108, 92, 231; /* même couleur que --accent, en RGB (pour les transparences) */
-  --accent-soft: #f0eefe;     /* version très claire de l'accent */
+  --accent-rgb: 108, 92, 231; /* même couleur en RGB, pour les transparences */
   --on-accent: #ffffff;       /* texte/icône posé SUR l'accent */
 
-  /* Textes */
+  /* --- Fond + neutres (défaut : clair) --- */
+  --bg: #ffffff;              /* fond de page */
+  --surface: #f0f0f0;         /* fonds neutres gris (toggle, etc.) */
   --text-fort: #1a1a1a;       /* titres, texte important */
-  --text-doux: #777777;       /* texte secondaire, descriptions */
+  --text-doux: #777777;       /* texte secondaire, gris */
+  --panel-rgb: 255, 255, 255; /* fond du sélecteur de thème */
 
-  /* Surfaces */
-  --surface: #f0f0f0;         /* fonds neutres (toggle, etc.) */
-
-  /* États */
+  /* --- États --- */
   --succes: #00b894;          /* confirmation (ex : copié) */
 }
 
-[data-theme="ocean"] {
-  --accent: #0984e3;
-  --accent-rgb: 9, 132, 227;
-  --accent-soft: #e8f3fd;
+/* ============ COULEURS D'ACCENT ============ */
+[data-theme="violet"]   { --accent: #6c5ce7; --accent-rgb: 108, 92, 231; }
+[data-theme="indigo"]   { --accent: #4f46e5; --accent-rgb: 79, 70, 229; }
+[data-theme="ocean"]    { --accent: #0984e3; --accent-rgb: 9, 132, 227; }
+[data-theme="cyan"]     { --accent: #00b8d4; --accent-rgb: 0, 184, 212; }
+[data-theme="emeraude"] { --accent: #00b894; --accent-rgb: 0, 184, 148; }
+[data-theme="lime"]     { --accent: #7cb342; --accent-rgb: 124, 179, 66; }
+[data-theme="ambre"]    { --accent: #f39c12; --accent-rgb: 243, 156, 18; }
+[data-theme="corail"]   { --accent: #e17055; --accent-rgb: 225, 112, 85; }
+[data-theme="rouge"]    { --accent: #e74c3c; --accent-rgb: 231, 76, 60; }
+[data-theme="rose"]     { --accent: #e84393; --accent-rgb: 232, 67, 147; }
+
+/* ============ FONDS ============ */
+[data-bg="clair"] {
+  --bg: #ffffff;
+  --surface: #f0f0f0;
+  --text-fort: #1a1a1a;
+  --text-doux: #777777;
+  --panel-rgb: 255, 255, 255;
 }
 
-[data-theme="emeraude"] {
-  --accent: #00b894;
-  --accent-rgb: 0, 184, 148;
-  --accent-soft: #e6f8f3;
+[data-bg="creme"] {
+  --bg: #faf6ef;
+  --surface: #efe7d8;
+  --text-fort: #2b2a26;
+  --text-doux: #8a8275;
+  --panel-rgb: 255, 253, 248;
 }
 
-[data-theme="corail"] {
-  --accent: #e17055;
-  --accent-rgb: 225, 112, 85;
-  --accent-soft: #fdeee9;
+[data-bg="brume"] {
+  --bg: #eef2f7;
+  --surface: #dde4ee;
+  --text-fort: #1f2730;
+  --text-doux: #6b7682;
+  --panel-rgb: 255, 255, 255;
 }
 
-[data-theme="rose"] {
-  --accent: #e84393;
-  --accent-rgb: 232, 67, 147;
-  --accent-soft: #fde9f2;
+[data-bg="sombre"] {
+  --bg: #15151c;
+  --surface: #26262f;
+  --text-fort: #f4f4f7;
+  --text-doux: #9a9aa6;
+  --panel-rgb: 32, 32, 42;
 }
 
-[data-theme="ambre"] {
-  --accent: #f39c12;
-  --accent-rgb: 243, 156, 18;
-  --accent-soft: #fdf3e1;
+[data-bg="ardoise"] {
+  --bg: #1b2430;
+  --surface: #2a3645;
+  --text-fort: #eef3f8;
+  --text-doux: #93a1b0;
+  --panel-rgb: 30, 40, 52;
 }
