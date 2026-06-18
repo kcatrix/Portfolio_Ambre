@@ -202,6 +202,7 @@ function flip(e: Event) {
   justify-content: center;
   transition: all 0.25s;
   text-decoration: none;
+  color: var(--accent);
 }
 
 .social:hover {
@@ -222,6 +223,7 @@ function flip(e: Event) {
   border-radius: 999px;     /* coins ultra-arrondis = pilule */
   cursor: pointer;
   font-family: inherit;     /* hérite de la police du parent */
+  margin-top: 5px;
 }
 
 .mail-icone {
@@ -230,7 +232,7 @@ function flip(e: Event) {
 }
 
 .mail-adresse {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--text-fort);
 }
