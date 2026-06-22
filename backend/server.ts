@@ -69,3 +69,12 @@ app.post('/api/avis', (req, res) => {
 
   res.status(201).json({ id: result.lastInsertRowid })
 })
+
+app.get('/api/avis/:pseudo', (req, res) => {
+  if (req.query.secret !== process.env.ADMIN_SECRET) {
+    return res.status(401).send('Non autorisé')
+  }
+  const result = db.prepare('DELETE FROM avis WHERE pseudo = ?').run(req.params.pseudo)
+  console.log(result)
+  res.json({ supprimes: result.changes })
+})
