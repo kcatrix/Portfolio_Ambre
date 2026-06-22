@@ -54,9 +54,9 @@ function playVideo() {
 }
 
 .video-wrapper.short {
+  /* Pas de max-width : le short remplit sa colonne 1fr -> il scale avec
+     l'écran et l'espacement entre vidéos reste régulier (le gap de la grille). */
   aspect-ratio: 9 / 16;
-  max-width: 15.625rem;
-  margin: 0 auto;
 }
 
 .video-wrapper iframe {
