@@ -118,7 +118,7 @@ const Videofiltrer = computed(() =>
 }
 
 .video-container.grille-shorts {
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .video-enter-active, .video-leave-active { transition: all 0.5s ease; }
