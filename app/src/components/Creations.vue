@@ -56,10 +56,15 @@ const Videofiltrer = computed(() =>
 .titre-contenue-droite {
   text-align: center;
   padding: 0 20px;
+  font-size: 24px;
+}
+
+.titre-contenue-droite h2{
+  margin: 15px;
 }
 
 .droite .separateur {
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .segment {

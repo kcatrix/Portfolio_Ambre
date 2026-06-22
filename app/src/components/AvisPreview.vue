@@ -46,7 +46,7 @@ function étoile(note: number) {
 	display: inline-flex;
   width: max-content;
 	gap: 16px;
-  animation: defiler 25s linear infinite;
+  animation: defiler 55s linear infinite;
 }
 
 @keyframes defiler {

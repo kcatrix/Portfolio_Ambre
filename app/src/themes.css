@@ -85,3 +85,10 @@
   --text-doux: #93a1b0;
   --panel-rgb: 30, 40, 52;
 }
+
+.titre {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.5px;   /* resserre les lettres → look "punchy" */
+  color: #1a1a1a;
+}

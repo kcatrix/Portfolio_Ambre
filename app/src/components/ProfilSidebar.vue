@@ -14,7 +14,7 @@ function setClipboard(text: string) {
 
 function flip(e: Event) {
   (e.currentTarget as HTMLElement).animate(
-    [{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(360deg)' }],
+    [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(360deg)' }],
     { duration: 600, easing: 'ease' }
   )
 }
