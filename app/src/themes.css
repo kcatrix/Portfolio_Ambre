@@ -27,7 +27,13 @@
    lisible sur les petits écrans.
    ============================================================ */
 html {
-  font-size: max(11px, calc(100vw / 90));
+  /* L'échelle suit la DIMENSION LA PLUS CONTRAIGNANTE, pas seulement la largeur :
+     - 100vw / 90  -> référence largeur : 1440px => 16px (rendu d'origine)
+     - 100vh / 50  -> empêche le contenu de dépasser en hauteur sur écran large/court
+       (évite le scroll vertical : ~810px de haut => 16px)
+     min() garde la plus petite des deux. clamp() borne : plancher 11px
+     (petits écrans), plafond 18px (très grands écrans -> n'explose plus). */
+  font-size: clamp(11px, min(100vw / 90, 100vh / 50), 18px);
 }
 
 :root {
