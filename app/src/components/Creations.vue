@@ -26,7 +26,7 @@ const Videofiltrer = computed(() =>
 <template>
   <div class="droite">
     <div class="titre-contenue-droite">
-      <h2>Mes créations</h2>
+      <h2>Mes création</h2>
     </div>
     <div>
       <hr class="separateur">
