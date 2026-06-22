@@ -16,6 +16,20 @@
    (tableaux `themes` / `backgrounds`) pour la pastille.
    ============================================================ */
 
+/* ============================================================
+   ÉCHELLE FLUIDE
+   ------------------------------------------------------------
+   Tout le site est dimensionné en rem. Cette UNIQUE valeur fait
+   donc grandir/rétrécir tout le design ensemble, dans les mêmes
+   proportions, selon la largeur de l'écran → même design partout.
+   Référence : 1440px de large => 16px (100vw / 90 = 16px), soit
+   exactement le rendu d'origine. Plancher à 11px pour rester
+   lisible sur les petits écrans.
+   ============================================================ */
+html {
+  font-size: max(11px, calc(100vw / 90));
+}
+
 :root {
   /* --- Accent (défaut : violet) --- */
   --accent: #6c5ce7;

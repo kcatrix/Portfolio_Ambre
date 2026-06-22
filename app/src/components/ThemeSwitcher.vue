@@ -86,11 +86,11 @@ watch(bgActif, (id) => {
 <style scoped>
 .theme-switcher {
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: 1rem;
+  right: 1rem;
   z-index: 100;
   /* zone de survol un peu plus large que le bouton pour déclencher tôt */
-  padding-bottom: 12px;
+  padding-bottom: 0.75rem;
 }
 
 /* Le bouton compact, toujours visible */
@@ -99,15 +99,15 @@ watch(bgActif, (id) => {
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  width: 44px;
-  height: 44px;
+  width: 2.75rem;
+  height: 2.75rem;
   border: none;
   border-radius: 50%;
   background: var(--accent);
   color: var(--on-accent);
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.18);
   transition: transform 0.2s, background 0.3s ease;
 }
 
@@ -123,17 +123,17 @@ watch(bgActif, (id) => {
   right: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
   background: rgba(var(--panel-rgb), 0.85);
-  backdrop-filter: blur(8px);
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(0.5rem);
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 1.125rem rgba(0, 0, 0, 0.2);
 
   /* état replié */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-8px) scale(0.96);
+  transform: translateY(-0.5rem) scale(0.96);
   transform-origin: top right;
   pointer-events: none;
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
@@ -150,31 +150,31 @@ watch(bgActif, (id) => {
 .switch-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .switch-label {
-  width: 52px;
-  font-size: 11px;
+  width: 3.25rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.025rem;
   color: var(--text-doux);
 }
 
 .dots {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .dot {
-  width: 22px;
-  height: 22px;
+  width: 1.375rem;
+  height: 1.375rem;
   padding: 0;
-  border: 2px solid transparent;
+  border: 0.125rem solid transparent;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.25); /* contour léger pour le blanc */
+  box-shadow: inset 0 0 0 0.0625rem rgba(128, 128, 128, 0.25); /* contour léger pour le blanc */
   transition: transform 0.2s, border-color 0.2s;
 }
 

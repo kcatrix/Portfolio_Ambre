@@ -37,9 +37,9 @@ body {
 /* Séparateur partagé par les deux colonnes — laissé global volontairement. */
 .separateur {
   border: none;
-  height: 2px;
+  height: 0.125rem;
   width: 80%;
-  margin: 20px auto;
+  margin: 1.25rem auto;
   background: linear-gradient(to right, transparent, rgba(var(--accent-rgb), 0.6), transparent);
 }
 </style>

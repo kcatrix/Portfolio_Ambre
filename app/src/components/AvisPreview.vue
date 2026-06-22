@@ -44,7 +44,7 @@ function étoile(note: number) {
 <style>
 
 .avis {
-  margin: 10px 20px;
+  margin: 0.625rem 1.25rem;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -52,7 +52,7 @@ function étoile(note: number) {
 .avis-container {
 	display: inline-flex;
   width: max-content;
-	gap: 16px;
+	gap: 1rem;
   animation: defiler 55s linear infinite;
 }
 
@@ -63,8 +63,8 @@ function étoile(note: number) {
 .tick-item {
   display: inline-flex;   /* les 4 morceaux alignés sur une ligne */
   align-items: center;
-  gap: 8px;               /* petit espace entre pseudo / étoiles / message / séparateur */
-  font-size: 15px;
+  gap: 0.5rem;               /* petit espace entre pseudo / étoiles / message / séparateur */
+  font-size: 0.9375rem;
 }
 
 .tick-msg {
@@ -78,13 +78,13 @@ function étoile(note: number) {
 
 .tick-etoiles {
   color: #f5b50a;         /* doré façon Amazon */
-  font-size: 13px;
-  letter-spacing: 1px;    /* aère un peu les étoiles */
+  font-size: 0.8125rem;
+  letter-spacing: 0.0625rem;    /* aère un peu les étoiles */
 }
 
 .tick-sep {
   color: var(--accent);     /* couleur d'accent du thème */
-  font-size: 18px;         /* un petit point */
+  font-size: 1.125rem;         /* un petit point */
 }
 
 </style>

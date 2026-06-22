@@ -92,25 +92,25 @@ function brillance(e: Event) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 450px;
+  width: 28.125rem;
   top: 0;
   align-self: flex-start;
-  perspective: 800px;
+  perspective: 50rem;
   position: sticky;
 }
 
 .intro {
-  max-width: 340px;
+  max-width: 21.25rem;
   text-align: center;
 }
 
 .accroche {
-  font-size: 21px;
+  font-size: 1.3125rem;
   font-weight: 600;
   font-style: normal;   /* on enlève l'italique pour un rendu plus net */
   line-height: 1.4;
   color: var(--text-fort);
-  margin: 0 0 12px;
+  margin: 0 0 0.75rem;
 }
 
 .accroche .mot-anime {
@@ -146,7 +146,7 @@ function brillance(e: Event) {
 }
 
 .bio {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-doux);     /* bio plus discrète */
   line-height: 1.6;
   margin: 0;
@@ -156,55 +156,55 @@ function brillance(e: Event) {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-width: 250px;
+  max-width: 15.625rem;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .skills li {
-  border-left: 3px solid var(--accent);   /* la barre d'accent */
-  padding: 2px 0 2px 12px;          /* espace entre la barre et le texte */
+  border-left: 0.1875rem solid var(--accent);   /* la barre d'accent */
+  padding: 0.125rem 0 0.125rem 0.75rem;          /* espace entre la barre et le texte */
   text-align: left;
 }
 
 .skill-titre {
   display: flex;       /* icône + titre sur la même ligne */
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .skill-titre i {
   color: var(--accent);
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .skills strong {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-fort);
 }
 
 .skill-desc {
   display: block;      /* passe à la ligne sous le titre */
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-doux);
   line-height: 1.4;
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
 
 .skills-orbite {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .photo-profil {
-  margin-top: 20px;
-  width: 200px;
-  height: 200px;
+  margin-top: 1.25rem;
+  width: 12.5rem;
+  height: 12.5rem;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 3px 70px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0.1875rem 4.375rem rgba(0, 0, 0, 0.3);
   transition: transform 0.3s;
   animation: photo-flou 3s ease both;
   cursor: pointer;
@@ -217,7 +217,7 @@ function brillance(e: Event) {
 @keyframes photo-flou {
   from {
     opacity: 0;
-    filter: blur(20px);
+    filter: blur(1.25rem);
   }
   to {
     opacity: 1;
@@ -227,13 +227,13 @@ function brillance(e: Event) {
 
 .socials {
   display: flex;
-  gap: 14px;
+  gap: 0.875rem;
   justify-content: center;
 }
 
 .social {
-  width: 44px;
-  height: 44px;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -244,33 +244,33 @@ function brillance(e: Event) {
 }
 
 .social:hover {
-  transform: translateY(-3px);
+  transform: translateY(-0.1875rem);
 }
 
 .social i {
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 
 .mail-chip {
   display: inline-flex;     /* les 3 éléments en ligne */
   align-items: center;      /* alignés verticalement au centre */
-  gap: 10px;                /* espace entre eux */
-  padding: 8px 8px 8px 16px;
+  gap: 0.625rem;                /* espace entre eux */
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
   background: rgba(var(--accent-rgb), 0.1);   /* accent très clair, s'adapte au fond */
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
-  border-radius: 999px;     /* coins ultra-arrondis = pilule */
+  border: 0.0625rem solid rgba(var(--accent-rgb), 0.2);
+  border-radius: 62.4375rem;     /* coins ultra-arrondis = pilule */
   cursor: pointer;
   font-family: inherit;     /* hérite de la police du parent */
-  margin-top: 5px;
+  margin-top: 0.3125rem;
 }
 
 .mail-icone {
   color: var(--accent);
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .mail-adresse {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-fort);
 }
@@ -279,19 +279,19 @@ function brillance(e: Event) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   border: none;
   border-radius: 50%;       /* cercle parfait */
   background: var(--accent);
   color: var(--on-accent);  /* l'icône hérite de cette couleur */
-  font-size: 13px;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 
 .mail-chip:hover {
   border-color: rgba(var(--accent-rgb), 0.5);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .mail-copier:hover {
@@ -308,8 +308,8 @@ function brillance(e: Event) {
 
 .logiciels {
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 9.375rem;
+  height: 9.375rem;
   flex-shrink: 0;
   animation: orbite 14s linear infinite;
 }
@@ -318,10 +318,10 @@ function brillance(e: Event) {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50px;
-  height: 50px;
-  margin: -30px;
-  transform: rotate(var(--a)) translate(50px) rotate(calc(-1 * var(--a)));
+  width: 3.125rem;
+  height: 3.125rem;
+  margin: -1.875rem;
+  transform: rotate(var(--a)) translate(3.125rem) rotate(calc(-1 * var(--a)));
 }
 
 .logiciel img {
@@ -341,9 +341,9 @@ function brillance(e: Event) {
 
 .logiciel img:hover {
   filter:
-    drop-shadow(0 0 6px rgba(255, 215, 0, 0.95))
-    drop-shadow(0 0 16px rgba(255, 195, 0, 0.8))
-    drop-shadow(0 0 32px rgba(255, 170, 0, 0.6));
+    drop-shadow(0 0 0.375rem rgba(255, 215, 0, 0.95))
+    drop-shadow(0 0 1rem rgba(255, 195, 0, 0.8))
+    drop-shadow(0 0 2rem rgba(255, 170, 0, 0.6));
 }
 
 @keyframes orbite { to { transform: rotate(360deg); } }

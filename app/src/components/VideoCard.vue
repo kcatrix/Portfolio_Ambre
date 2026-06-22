@@ -43,19 +43,19 @@ function playVideo() {
 .video-wrapper {
   position: relative;
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   overflow: hidden;
   transition: opacity 1.6s ease, filter 1.6s ease;
 }
 
 .video-wrapper.chargement {
   opacity: 0;
-  filter: blur(12px);
+  filter: blur(0.75rem);
 }
 
 .video-wrapper.short {
   aspect-ratio: 9 / 16;
-  max-width: 250px;
+  max-width: 15.625rem;
   margin: 0 auto;
 }
 

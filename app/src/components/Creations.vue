@@ -55,16 +55,16 @@ const Videofiltrer = computed(() =>
 
 .titre-contenue-droite {
   text-align: center;
-  padding: 0 20px;
-  font-size: 24px;
+  padding: 0 1.25rem;
+  font-size: 1.5rem;
 }
 
 .titre-contenue-droite h2{
-  margin: 15px;
+  margin: 0.9375rem;
 }
 
 .droite .separateur {
-  margin-top: 1px;
+  margin-top: 0.0625rem;
 }
 
 .segment {
@@ -72,35 +72,35 @@ const Videofiltrer = computed(() =>
   display: flex;
   width: fit-content;
   margin: 0 auto;
-  padding: 5px;
+  padding: 0.3125rem;
   background: var(--surface);
-  border-radius: 999px;
+  border-radius: 62.4375rem;
 }
 
 .indicateur {
   position: absolute;
-  top: 4px;
-  bottom: 4px;
-  left: 4px;
-  width: 90px;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0.25rem;
+  width: 5.625rem;
   background: var(--accent);
-  border-radius: 999px;
+  border-radius: 62.4375rem;
   transition: transform 0.28s cubic-bezier(.4, 0, .2, 1);
 }
 
 .segment.sur-videos .indicateur {
-  transform: translateX(90px);
+  transform: translateX(5.625rem);
 }
 
 .opt {
   position: relative;
   z-index: 1;
-  width: 90px;
-  padding: 8px 0;
+  width: 5.625rem;
+  padding: 0.5rem 0;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-doux);
   transition: color 0.2s;
@@ -113,8 +113,8 @@ const Videofiltrer = computed(() =>
 .video-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 10px;
+  gap: 1.25rem;
+  padding: 0.625rem;
 }
 
 .video-container.grille-shorts {
@@ -122,5 +122,5 @@ const Videofiltrer = computed(() =>
 }
 
 .video-enter-active, .video-leave-active { transition: all 0.5s ease; }
-.video-enter-from, .video-leave-to { opacity: 0; filter: blur(12px); }
+.video-enter-from, .video-leave-to { opacity: 0; filter: blur(0.75rem); }
 </style>
