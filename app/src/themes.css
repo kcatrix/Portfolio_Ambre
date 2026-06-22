@@ -107,8 +107,8 @@ html {
 }
 
 .titre {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 700;
-  letter-spacing: -0.5px;   /* resserre les lettres → look "punchy" */
-  color: #1a1a1a;
+  letter-spacing: -0.03125rem;   /* resserre les lettres → look "punchy" */
+  color: var(--text-fort);       /* suit le thème (était #1a1a1a -> invisible en sombre) */
 }

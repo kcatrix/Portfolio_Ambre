@@ -69,8 +69,9 @@ async function envoyer () {
 
 .page-avis{
 	display: flex; align-items: center; justify-content: center;
-	background: #f7f6fd;
-	min-height: 100vh;
+	background: var(--bg);
+	color: var(--text-fort);
+	min-height: 100dvh;
 	flex-direction: column;
 }
 
@@ -78,24 +79,26 @@ async function envoyer () {
 .form{
 	display: flex;
 	flex-direction: column;
-	gap : 10px;
+	gap : 0.625rem;
 	text-align: center;
-	margin: 30px auto;
+	margin: 1.875rem auto;
 	width: 100%;
-	max-width: 500px;
-	background: white;
-	padding: 32px;
-	border-radius: 16px;
+	max-width: 31.25rem;
+	background: var(--surface);
+	padding: 2rem;
+	border-radius: 1rem;
 
 }
 
 .form input, .form textarea{
-	padding: 11px;
-	border: 1px solid #ddd;
-	border-radius: 10px;
+	padding: 0.6875rem;
+	border: 0.0625rem solid rgba(128, 128, 128, 0.3);
+	border-radius: 0.625rem;
 	box-sizing: border-box;
 	width: 100%;
-	font-size: 14px
+	font-size: 0.875rem;
+	background: var(--bg);
+	color: var(--text-fort);
 }
 .form textarea{
 	font-family: inherit;
@@ -103,31 +106,31 @@ async function envoyer () {
 }
 
 .form input:focus, .form textarea:focus {
-  border-color: #6c5ce7;
+  border-color: var(--accent);
   outline: none;
 }
 
 .étoile{
 	color: #f5b50a;         /* doré façon Amazon */
-	font-size: 26px;
-	letter-spacing: 1px;
+	font-size: 1.625rem;
+	letter-spacing: 0.0625rem;
 	cursor: pointer;
 }
 
 .form button{
-	background: #6c5ce7;
-	color: white;
+	background: var(--accent);
+	color: var(--on-accent);
 	border: none;
-	border-radius: 10px;
-	padding: 12px;
+	border-radius: 0.625rem;
+	padding: 0.75rem;
 	font-weight: 600;
 	cursor: pointer;
 }
 
-.form button:hover { background: #5a4bd1; }
+.form button:hover { filter: brightness(0.92); }
 
 .erreur {
   color: #e74c3c;   /* rouge */
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 </style>
