@@ -17,6 +17,10 @@ onMounted(async () => {
 
 const avisDouble = computed(() => [... avis.value, ... avis.value])
 
+// Durée proportionnelle au nombre d'avis -> vitesse de défilement constante
+// (~6s par avis, minimum 12s pour éviter un tour trop rapide quand il y en a 1 ou 2)
+const dureeDefilement = computed(() => Math.max(12, avis.value.length * 6) + 's')
+
 function premierePhrase(texte: string) {
   const match = texte.match(/^.*?[.!?]/)
   if (match) return match[0]
@@ -30,7 +34,7 @@ function étoile(note: number) {
 
 <template>
   <div class="avis">
-	<div class="avis-container">
+	<div class="avis-container" :style="{ animationDuration: dureeDefilement }">
 	  <div v-for="(info, i) in avisDouble" :key="`${info.id}-${i}`" class="tick-item">
       <span class="tick-pseudo">{{ info.pseudo }}</span>
       <span class="tick-etoiles">{{ étoile(info.note) }}</span>
@@ -53,7 +57,7 @@ function étoile(note: number) {
 	display: inline-flex;
   width: max-content;
 	gap: 1rem;
-  animation: defiler 55s linear infinite;
+  animation: defiler linear infinite;
 }
 
 @keyframes defiler {
