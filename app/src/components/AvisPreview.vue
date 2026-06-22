@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-const avis = ref([])
+
+interface Avis {
+  id: number
+  pseudo: string
+  note: number
+  message: string
+}
+const avis = ref<Avis[]>([])
 
 onMounted(async () => {
   const response = await fetch(`${apiUrl}/api/avis`)

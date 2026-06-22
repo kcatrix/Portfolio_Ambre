@@ -52,7 +52,7 @@ async function envoyer () {
 		<input v-model="email" type="email" placeholder="Ton email (ne sera pas affiché)" required>
 		<textarea v-model="message" type="text" placeholder="Ton avis sur mon travail" required></textarea>
 		<div @mouseleave="survol = 0">
-			<span class="étoile" v-for="(i,index) in 5" @mouseenter="survol = i" @click="note = i">
+			<span class="étoile" v-for="(i) in 5" @mouseenter="survol = i" @click="note = i">
 				{{ (survol || note) >= i ? '★' : '☆' }}
 			</span>
 		</div>
