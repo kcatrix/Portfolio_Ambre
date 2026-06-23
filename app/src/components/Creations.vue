@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import VideoCard from './VideoCard.vue'
 import AvisPreview from './AvisPreview.vue'
+import AvisComplet from './AvisComplet.vue'
 
 interface Video {
   IdVideo: string
@@ -41,6 +42,10 @@ const Videofiltrer = computed(() =>
           <VideoCard v-for="video in Videofiltrer" :key="video.IdVideo" :video="video" />
         </div>
       </Transition>
+      <div class="AvisComplet">
+        <hr class="separateur">
+          <AvisComplet />
+      </div>
     </div>
   </div>
 </template>
@@ -123,4 +128,11 @@ const Videofiltrer = computed(() =>
 
 .video-enter-active, .video-leave-active { transition: all 0.5s ease; }
 .video-enter-from, .video-leave-to { opacity: 0; filter: blur(0.75rem); }
+
+.AvisComplet{
+  text-align: center;
+}
+.AvisComplet .separateur{
+  margin-top: 1.7rem;
+}
 </style>
