@@ -22,6 +22,12 @@ interface Avis {
 
 const avis = ref<Avis[]>([])
 
+// la chaîne YouTube @undefined (récupérée par erreur quand l'URL n'a pas de @handle)
+// renvoie le nom "Undefined" → on l'ignore et on génère le cadre à la place
+function vraieChaine(info: Avis): boolean {
+  return !!info.chaine_logo && info.chaine_nom !== 'Undefined'
+}
+
 function formatAbonnes(n: string | null): string {
   if (!n) return ''
   const num = Number(n)
@@ -42,11 +48,11 @@ function formatAbonnes(n: string | null): string {
 
 		<!-- en-tête : la chaîne -->
 		<div class="card-entete">
-		<img v-if="info.chaine_logo" :src="info.chaine_logo" :alt="info.pseudo" class="avis-logo">
+		<img v-if="vraieChaine(info)" :src="info.chaine_logo!" :alt="info.pseudo" class="avis-logo">
 		<div v-else class="avis-logo avatar-vide">{{ info.pseudo.charAt(0).toUpperCase() }}</div>
 		<div class="card-ident">
 			<span class="avis-nom">{{ info.pseudo }}</span>
-			<span v-if="info.chaine_abonnes" class="avis-abonnes">{{ formatAbonnes(info.chaine_abonnes) }} abonnés</span>
+			<span v-if="vraieChaine(info) && info.chaine_abonnes" class="avis-abonnes">{{ formatAbonnes(info.chaine_abonnes) }} abonnés</span>
 		</div>
 		<i class="fa-brands fa-youtube yt-icon"></i>
 		</div>

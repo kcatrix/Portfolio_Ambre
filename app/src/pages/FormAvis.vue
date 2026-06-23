@@ -63,7 +63,7 @@ async function envoyer () {
 		<button type="submit">Envoyer</button>
 		<p v-if="erreur" class="erreur">{{ erreur }}</p>
 	</form>
-	<div class="remerciment" v-else>
+	<div class="titre" v-else>
 		Merci pour ton avis !
 	</div>
 </div>
@@ -136,5 +136,9 @@ async function envoyer () {
 .erreur {
   color: #e74c3c;   /* rouge */
   font-size: 0.875rem;
+}
+
+.remerciment {
+
 }
 </style>
