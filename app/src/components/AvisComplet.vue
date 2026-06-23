@@ -35,7 +35,7 @@ function formatAbonnes(n: string | null): string {
 <template>
 <div v-if="avis.length > 0">
 	<hr class="separateur">
-	<h2 class="titre">Ils me font confiance</h2>
+	<h2 class="titre">Ils me font <span>confiance</span></h2>
 	<div class="grille-avis">
 	<a v-for="(info, i) in avis" :key="`${info.id}-${i}`"
 		:href="info.url" target="_blank" class="cards">
@@ -59,6 +59,11 @@ function formatAbonnes(n: string | null): string {
 </template>
 
 <style scoped>
+
+.titre .span {
+  color: var(--accent);
+}
+
 
 .grille-avis {
   display: grid;
