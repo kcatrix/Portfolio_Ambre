@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
+import BullesFond from '../components/BullesFond.vue'
+import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 
 const pseudo = ref('');
 const url = ref('');
@@ -45,6 +47,8 @@ async function envoyer () {
 </script>
 
 <template>
+<BullesFond />
+<ThemeSwitcher />
 <div class="page-avis">
 	<div v-if="!send" class="titre">Laisse ton avis</div>
 	<form @submit.prevent="envoyer" v-if="!send" class="form">
@@ -69,8 +73,7 @@ async function envoyer () {
 
 .page-avis{
 	display: flex; align-items: center; justify-content: center;
-	background: var(--bg-gradient);
-	background-attachment: fixed;   /* dégradé fixe pendant le défilement */
+	background: transparent;   /* laisse voir le dégradé du body + les bulles */
 	color: var(--text-fort);
 	min-height: 100dvh;
 	flex-direction: column;
