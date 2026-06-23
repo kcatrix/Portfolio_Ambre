@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 
 const pseudo = ref('');
-const email = ref('');
+const url = ref('');
 const note = ref();
 const message = ref('');
 const survol = ref(0);
@@ -26,7 +26,7 @@ async function envoyer () {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			pseudo: pseudo.value,
-			email: email.value,
+			url: url.value,
 			note: note.value,
 			message: message.value,          
     	})
@@ -49,7 +49,7 @@ async function envoyer () {
 	<div class="titre">Laisse ton avis</div>
 	<form @submit.prevent="envoyer" v-if="!send" class="form">
 		<input v-model="pseudo" type="text" placeholder="Le nom de ta chaîne" required>
-		<input v-model="email" type="email" placeholder="Ton email (ne sera pas affiché)" required>
+		<input v-model="url" type="url" placeholder="Url de ta chaine ex:(https://www.youtube.com/@Squeezie)" required>
 		<textarea v-model="message" type="text" placeholder="Ton avis sur mon travail" required></textarea>
 		<div @mouseleave="survol = 0">
 			<span class="étoile" v-for="(i) in 5" @mouseenter="survol = i" @click="note = i">
