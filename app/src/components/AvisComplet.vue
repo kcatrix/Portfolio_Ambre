@@ -48,7 +48,8 @@ function formatAbonnes(n: string | null): string {
 
 		<!-- en-tête : la chaîne -->
 		<div class="card-entete">
-		<img v-if="vraieChaine(info)" :src="info.chaine_logo!" :alt="info.pseudo" class="avis-logo">
+		<img v-if="vraieChaine(info)" :src="info.chaine_logo!" :alt="info.pseudo" class="avis-logo"
+			referrerpolicy="no-referrer" @error="info.chaine_logo = null">
 		<div v-else class="avis-logo avatar-vide">{{ info.pseudo.charAt(0).toUpperCase() }}</div>
 		<div class="card-ident">
 			<span class="avis-nom">{{ info.pseudo }}</span>
@@ -66,7 +67,7 @@ function formatAbonnes(n: string | null): string {
 
 <style scoped>
 
-.titre .span {
+.titre span {
   color: var(--accent);
 }
 
