@@ -12,13 +12,16 @@ app.get('/test', (req, res) => {
 })
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS avis (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  pseudo TEXT NOT NULL,
-  email TEXT NOT NULL,
-  note INTEGER NOT NULL CHECK (note BETWEEN 1 AND 5),
-  message TEXT NOT NULL,
-  date TEXT DEFAULT CURRENT_TIMESTAMP
+    CREATE TABLE IF NOT EXISTS avis (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pseudo TEXT NOT NULL,
+    note INTEGER NOT NULL CHECK (note BETWEEN 1 AND 5),
+    message TEXT NOT NULL,
+    url TEXT NOT NULL,
+    chaine_nom TEXT,
+    chaine_logo TEXT,
+    chaine_abonnes TEXT,
+    date TEXT DEFAULT CURRENT_TIMESTAMP
   )
 `)
 
@@ -55,18 +58,33 @@ app.get('/api/avis' , async (req, res) => {
 
 app.use(express.json()) 
 
-app.post('/api/avis', (req, res) => {
-  const { pseudo, email, note, message } = req.body
+app.post('/api/avis', async (req, res) => {
+  const { pseudo, url, note, message } = req.body
 
-  if (!pseudo || !email || !note || !message) {
+  if (!pseudo || !url || !note || !message) {
     return res.status(400).json({ erreur: 'Champs manquants' })
   }
 
-  const stmt = db.prepare(
-    'INSERT INTO avis (pseudo, email, note, message) VALUES (?, ?, ?, ?)'
-  )
-  const result = stmt.run(pseudo, email, note, message)
+  let nom = null, logo = null, abonnes = null
 
+  try {
+    const handle = url.split('@')[1]
+    const reponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=@${handle}&key=${CLE_API}`)
+    const data = await reponse.json()
+    if (data.items && data.items.length > 0) {
+      const chaine = data.items[0]
+      nom = chaine.snippet.title
+      logo = chaine.snippet.thumbnails.high.url
+      abonnes = chaine.statistics.subscriberCount
+    }
+  } catch (e) {
+    console.log('YouTube KO, on enregistre sans la chaîne:', e)
+  }
+
+  const stmt = db.prepare(
+    'INSERT INTO avis (pseudo, url, note, message, chaine_nom, chaine_logo, chaine_abonnes) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  )
+  const result = stmt.run(pseudo, url, note, message, nom, logo, abonnes)
   res.status(201).json({ id: result.lastInsertRowid })
 })
 
