@@ -46,7 +46,7 @@ async function envoyer () {
 
 <template>
 <div class="page-avis">
-	<div class="titre">Laisse ton avis</div>
+	<div v-if="!send" class="titre">Laisse ton avis</div>
 	<form @submit.prevent="envoyer" v-if="!send" class="form">
 		<input v-model="pseudo" type="text" placeholder="Le nom de ta chaîne" required>
 		<input v-model="url" type="url" placeholder="Url de ta chaine ex:(https://www.youtube.com/@Squeezie)" required>
@@ -59,7 +59,7 @@ async function envoyer () {
 		<button type="submit">Envoyer</button>
 		<p v-if="erreur" class="erreur">{{ erreur }}</p>
 	</form>
-	<div v-else>
+	<div class="remerciment" v-else>
 		Merci pour ton avis !
 	</div>
 </div>
@@ -69,7 +69,8 @@ async function envoyer () {
 
 .page-avis{
 	display: flex; align-items: center; justify-content: center;
-	background: var(--bg);
+	background: var(--bg-gradient);
+	background-attachment: fixed;   /* dégradé fixe pendant le défilement */
 	color: var(--text-fort);
 	min-height: 100dvh;
 	flex-direction: column;

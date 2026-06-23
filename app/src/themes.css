@@ -51,6 +51,22 @@ html {
 
   /* --- États --- */
   --succes: #00b894;          /* confirmation (ex : copié) */
+
+  /* --- Dégradé de fond GLOBAL ---
+     Au lieu d'un fond plat, le site utilise ce dégradé moderne facon "mesh".
+     Il combine 4 couches et s'adapte TOUT SEUL à chaque fond (--bg / --surface)
+     ET à chaque accent (--accent-rgb) choisis — pas besoin de le redéfinir
+     par thème :
+       1. gros halo d'accent en haut à gauche (le plus marqué)
+       2. halo d'accent en bas à droite (équilibre la composition)
+       3. touche d'accent en haut à droite (donne du relief)
+       4. dégradé vertical du fond vers le gris "surface" (le contraste de base)
+     Pour calmer/intensifier l'effet : touche aux opacités (0.28 / 0.20 / 0.12). */
+  --bg-gradient:
+    radial-gradient(100% 90% at -5% -5%, rgba(var(--accent-rgb), 0.28), transparent 50%),
+    radial-gradient(90% 90% at 105% 105%, rgba(var(--accent-rgb), 0.20), transparent 55%),
+    radial-gradient(70% 60% at 100% 0%, rgba(var(--accent-rgb), 0.12), transparent 50%),
+    linear-gradient(160deg, var(--bg) 0%, var(--surface) 100%);
 }
 
 /* ============ COULEURS D'ACCENT ============ */

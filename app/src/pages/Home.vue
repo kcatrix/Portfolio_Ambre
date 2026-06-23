@@ -16,7 +16,8 @@ import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: var(--bg);
+  background: var(--bg-gradient);
+  background-attachment: fixed;   /* le dégradé reste fixe quand le contenu défile */
   color: var(--text-fort);
   transition: background 0.3s ease, color 0.3s ease;
 }
