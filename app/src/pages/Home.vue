@@ -2,9 +2,11 @@
 import ProfilSidebar from '../components/ProfilSidebar.vue'
 import Creations from '../components/Creations.vue'
 import ThemeSwitcher from '../components/ThemeSwitcher.vue'
+import BullesFond from '../components/BullesFond.vue'
 </script>
 
 <template>
+  <BullesFond />
   <ThemeSwitcher />
   <main class="contenu">
     <ProfilSidebar />
