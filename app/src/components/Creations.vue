@@ -43,7 +43,6 @@ const Videofiltrer = computed(() =>
         </div>
       </Transition>
       <div class="AvisComplet">
-        <hr class="separateur">
           <AvisComplet />
       </div>
     </div>

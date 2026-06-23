@@ -33,7 +33,7 @@ function étoile(note: number) {
 </script>
 
 <template>
-  <div class="avis">
+  <div v-if="avis.length > 0" class="avis">
 	<div class="avis-container" :style="{ animationDuration: dureeDefilement }">
 	  <div v-for="(info, i) in avisDouble" :key="`${info.id}-${i}`" class="tick-item">
       <span class="tick-pseudo">{{ info.pseudo }}</span>
