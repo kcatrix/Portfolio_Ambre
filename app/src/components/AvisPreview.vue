@@ -30,10 +30,16 @@ function premierePhrase(texte: string) {
 function étoile(note: number) {
   return '★'.repeat(note) + '☆'.repeat(5 - note)
 }
+
+function allerAuxAvis() {
+  const section = document.getElementById('section-avis')
+  section?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 </script>
 
 <template>
-  <div v-if="avis.length > 0" class="avis">
+  <div v-if="avis.length > 0" class="avis" @click="allerAuxAvis">
 	<div class="avis-container" :style="{ animationDuration: dureeDefilement }">
 	  <div v-for="(info, i) in avisDouble" :key="`${info.id}-${i}`" class="tick-item">
       <span class="tick-pseudo">{{ info.pseudo }}</span>
@@ -51,6 +57,7 @@ function étoile(note: number) {
   margin: 0.625rem 1.25rem;
   white-space: nowrap;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .avis-container {
@@ -64,6 +71,7 @@ function étoile(note: number) {
   from { transform: translateX(-50%);}
   to   {  transform: translateX(0); }
 }
+
 .tick-item {
   display: inline-flex;   /* les 4 morceaux alignés sur une ligne */
   align-items: center;

@@ -52,7 +52,7 @@ function formatAbonnes(n: string | null): string {
 </script>
 
 <template>
-<div v-if="avis.length > 0">
+<div v-if="avis.length > 0" id="section-avis">
 	<hr class="separateur">
 	<h2 class="titre">Ils me font <span>confiance</span></h2>
 	<div class="grille-avis">

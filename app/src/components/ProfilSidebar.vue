@@ -145,10 +145,11 @@ function brillance(e: Event) {
 .accroche {
   font-size: 1.3125rem;
   font-weight: 600;
-  font-style: normal;   /* on enlève l'italique pour un rendu plus net */
+  font-style: normal;
   line-height: 1.4;
   color: var(--text-fort);
   margin: 0 0 0.75rem;
+  min-height: 3.0em; 
 }
 
 .curseur::after {
@@ -159,6 +160,21 @@ function brillance(e: Event) {
 }
 @keyframes clignote {
   50% { opacity: 0; }
+}
+
+@keyframes bio-apparition {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(1rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes apparition-lateral {
+  from { opacity: 0; transform: translateX(-1rem); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 .accroche .mot-anime {
@@ -198,6 +214,8 @@ function brillance(e: Event) {
   color: var(--text-doux);     /* bio plus discrète */
   line-height: 1.6;
   margin: 0;
+  opacity: 0;
+  animation: bio-apparition 0.8s ease 2.5s forwards; 
 }
 
 .skills {
@@ -214,7 +232,13 @@ function brillance(e: Event) {
   border-left: 0.1875rem solid var(--accent);   /* la barre d'accent */
   padding: 0.125rem 0 0.125rem 0.75rem;          /* espace entre la barre et le texte */
   text-align: left;
+  opacity: 0;                                    /* caché au départ */
+  animation: apparition-lateral 0.6s ease forwards;      /* joue l'animation */
 }
+
+.skills li:nth-child(1) { animation-delay: 0.3s; }
+.skills li:nth-child(2) { animation-delay: 0.5s; }
+.skills li:nth-child(3) { animation-delay: 0.7s; }
 
 .skill-titre {
   display: flex;       /* icône + titre sur la même ligne */
@@ -311,6 +335,9 @@ function brillance(e: Event) {
   font-family: inherit;     /* hérite de la police du parent */
   margin-top: 0.3125rem;
 }
+
+.socials { opacity: 0; animation: apparition 0.6s ease 0.9s forwards; }
+.mail-chip { opacity: 0; animation: apparition 0.6s ease 1.1s forwards; }
 
 .mail-icone {
   color: var(--accent);
