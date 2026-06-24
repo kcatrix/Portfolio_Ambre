@@ -55,7 +55,9 @@ function formatAbonnes(n: string | null): string {
 			<span class="avis-nom">{{ info.pseudo }}</span>
 			<span v-if="vraieChaine(info) && info.chaine_abonnes" class="avis-abonnes">{{ formatAbonnes(info.chaine_abonnes) }} abonnés</span>
 		</div>
-		<i class="fa-brands fa-youtube yt-icon"></i>
+		<i class="fa-brands"
+    :class="info.url.includes('tiktok') ? 'fa-tiktok' : 'fa-youtube'"
+    :style="{ color: info.url.includes('tiktok') ? '#000000' : '#ff0000' }"></i>
 		</div>
 
 		<span class="avis-etoiles">{{ '★'.repeat(info.note) }}{{ '☆'.repeat(5 - info.note) }}</span>
