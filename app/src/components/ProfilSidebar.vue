@@ -280,7 +280,11 @@ function brillance(e: Event) {
   object-fit: cover;
   box-shadow: 0 0.1875rem 4.375rem rgba(0, 0, 0, 0.3);
   transition: transform 0.3s;
-  animation: photo-flou 3s ease both;
+  /* `backwards` (pas `both`) : on garde l'état de départ avant le lancement,
+     mais on NE retient PAS l'état final. Sinon `filter: blur(0)` resterait
+     collé en permanence -> la photo est rasterisée sur une couche GPU et le
+     `transform: scale()` du survol agrandit ce bitmap = flou (surtout en grand). */
+  animation: photo-flou 3s ease backwards;
   cursor: pointer;
 }
 
