@@ -173,7 +173,7 @@ function brillance(e: Event) {
 }
 
 @keyframes apparition-lateral {
-  from { opacity: 0; transform: translateX(-1rem); }
+  from { opacity: 0; transform: translateX(-2rem); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
@@ -233,7 +233,7 @@ function brillance(e: Event) {
   padding: 0.125rem 0 0.125rem 0.75rem;          /* espace entre la barre et le texte */
   text-align: left;
   opacity: 0;                                    /* caché au départ */
-  animation: apparition-lateral 0.6s ease forwards;      /* joue l'animation */
+  animation: apparition-lateral 1.6s ease forwards;      /* joue l'animation */
 }
 
 .skills li:nth-child(1) { animation-delay: 0.3s; }
