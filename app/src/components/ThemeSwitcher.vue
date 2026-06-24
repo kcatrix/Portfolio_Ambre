@@ -30,7 +30,7 @@ const backgrounds = [
 ]
 
 const themeActif = ref(localStorage.getItem('theme') || 'violet')
-const bgActif = ref(localStorage.getItem('bg') || 'clair')
+const bgActif = ref(localStorage.getItem('bg') || 'sombre')
 
 watch(themeActif, (id) => {
   document.documentElement.setAttribute('data-theme', id)
