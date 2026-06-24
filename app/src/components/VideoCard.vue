@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 const props = defineProps<{
   video: { IdVideo: string; short: boolean }
 }>()
+
+const chargee = ref(false)
 
 function lienEmbed(id: string) {
   return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1`
@@ -14,13 +18,13 @@ function playVideo() {
 
 <template>
   <div class="video-card">
-    <div class="video-wrapper" :class="{ short: video.short }">
+    <div class="video-wrapper" :class="{ short: video.short, chargement: !chargee }">
       <iframe
         :src="lienEmbed(video.IdVideo)"
         allow="autoplay; encrypted-media"
         allowfullscreen
         frameborder="0"
-        loading="lazy">
+        @load="chargee = true">
       </iframe>
       <div class="overlay" @click="playVideo"></div>
     </div>
@@ -41,12 +45,12 @@ function playVideo() {
   aspect-ratio: 16 / 9;
   border-radius: 0.5rem;
   overflow: hidden;
-  animation: apparition 1.6s ease;
+  transition: opacity 1.6s ease, filter 1.6s ease;
 }
 
-@keyframes apparition {
-  from { opacity: 0; filter: blur(0.75rem); }
-  to   { opacity: 1; filter: blur(0); }
+.video-wrapper.chargement {
+  opacity: 0;
+  filter: blur(0.75rem);
 }
 
 .video-wrapper.short {
