@@ -24,6 +24,7 @@ function playVideo() {
         allow="autoplay; encrypted-media"
         allowfullscreen
         frameborder="0"
+        loading="lazy"
         @load="chargee = true">
       </iframe>
       <div class="overlay" @click="playVideo"></div>
