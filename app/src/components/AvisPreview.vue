@@ -19,7 +19,7 @@ const avisDouble = computed(() => [... avis.value, ... avis.value])
 
 // Durée proportionnelle au nombre d'avis -> vitesse de défilement constante
 // (~6s par avis, minimum 12s pour éviter un tour trop rapide quand il y en a 1 ou 2)
-const dureeDefilement = computed(() => Math.max(12, avis.value.length * 6) + 's')
+const dureeDefilement = computed(() => Math.max(20, avis.value.length * 6) + 's')
 
 function premierePhrase(texte: string) {
   const match = texte.match(/^.*?[.!?]/)
