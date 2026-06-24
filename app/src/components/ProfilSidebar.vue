@@ -115,13 +115,15 @@ function brillance(e: Event) {
         <i class="fa-brands fa-discord"></i>
       </a>
     </div>
-    <button @click="setClipboard('ambre.rat2007@gmail.com')" class="mail-chip">
-      <i class="fa-regular fa-envelope mail-icone"></i>
-      <span class="mail-adresse">ambre.rat2007@gmail.com</span>
-      <span class="mail-copier" :class="{ copie: copie }">
-        <i :class="copie ? 'fa-solid fa-check' : 'fa-regular fa-copy'"></i>
-      </span>
-    </button>
+    <div class="mail-chip-zone">
+      <button @click="setClipboard('ambre.rat2007@gmail.com')" class="mail-chip">
+        <i class="fa-regular fa-envelope mail-icone"></i>
+        <span class="mail-adresse">ambre.rat2007@gmail.com</span>
+        <span class="mail-copier" :class="{ copie: copie }">
+          <i :class="copie ? 'fa-solid fa-check' : 'fa-regular fa-copy'"></i>
+        </span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -337,7 +339,9 @@ function brillance(e: Event) {
 }
 
 .socials { opacity: 0; animation: apparition 0.6s ease 0.9s forwards; }
-.mail-chip { opacity: 0; animation: apparition 0.6s ease 1.1s forwards; }
+/* L'apparition est sur le wrapper : ainsi le `transform` du bouton reste
+   libre pour le survol (sinon l'animation en `forwards` le fige et tue le hover). */
+.mail-chip-zone { opacity: 0; animation: apparition 0.6s ease 1.1s forwards; }
 
 .mail-icone {
   color: var(--accent);
