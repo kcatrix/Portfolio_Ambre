@@ -1,5 +1,37 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+
+const segments = [
+  { t: 'Donner du ' },
+  { t: 'rythme', kw: true },
+  { t: ', du ' },
+  { t: 'sens', kw: true },
+  { t: ' et du ' },
+  { t: 'style', kw: true, anime: true },
+  { t: ' à vos images.' },
+]
+
+const lettresAffichees = ref(0)
+const curseurVisible = ref(true)
+const total = segments.reduce((n, s) => n + s.t.length, 0)
+
+function texteVisible(index: number): string {
+  let avant = 0
+  for (let j = 0; j < index; j++) avant += segments[j].t.length
+  const restant = lettresAffichees.value - avant
+  if (restant <= 0) return ''
+  return segments[index].t.slice(0, restant)
+}
+
+onMounted(() => {
+  const timer = setInterval(() => {
+    lettresAffichees.value++
+    if (lettresAffichees.value >= total) {
+      clearInterval(timer)
+      setTimeout(() => { curseurVisible.value = false }, 1000)
+    }
+  }, 45)
+})
 
 const copie = ref(false)
 
@@ -38,7 +70,13 @@ function brillance(e: Event) {
          @click="flip">
     <hr class="separateur">
     <div class="intro">
-      <p class="accroche">Donner du <span>rythme</span>, du <span>sens</span> et du <span class="mot-anime" @click="brillance">style</span> à vos images.</p>
+      <p class="accroche">
+        <template v-for="(seg, i) in segments" :key="i"><span
+            v-if="seg.kw"
+            :class="{ 'mot-anime': seg.anime }"
+            @click="seg.anime && brillance($event)">{{ texteVisible(i) }}</span><template
+            v-else>{{ texteVisible(i) }}</template></template><span v-if="curseurVisible" class="curseur"></span>
+      </p>
       <p class="bio">Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
     </div>
     <div class="skills-orbite">
@@ -111,6 +149,16 @@ function brillance(e: Event) {
   line-height: 1.4;
   color: var(--text-fort);
   margin: 0 0 0.75rem;
+}
+
+.curseur::after {
+  content: '|';
+  color: var(--accent);
+  font-weight: 400;
+  animation: clignote 0.7s step-end infinite;
+}
+@keyframes clignote {
+  50% { opacity: 0; }
 }
 
 .accroche .mot-anime {
