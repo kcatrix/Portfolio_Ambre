@@ -1,12 +1,27 @@
 <script setup lang="ts">
 
-import { ref, onMounted} from 'vue'
+import { ref, onMounted, nextTick} from 'vue'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 onMounted(async () => {
   const response = await fetch(`${apiUrl}/api/avis`)
   avis.value = await response.json()
+  await nextTick()
+
+  const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible')
+    } else {
+      entry.target.classList.remove('visible')
+    }
+  })
+}, {
+  threshold: 0,                          
+})
+
+  document.querySelectorAll('.cards').forEach(card => observer.observe(card))
 })
 
 interface Avis {
@@ -22,8 +37,6 @@ interface Avis {
 
 const avis = ref<Avis[]>([])
 
-// la chaîne YouTube @undefined (récupérée par erreur quand l'URL n'a pas de @handle)
-// renvoie le nom "Undefined" → on l'ignore et on génère le cadre à la place
 function vraieChaine(info: Avis): boolean {
   return !!info.chaine_logo && info.chaine_nom !== 'Undefined'
 }
@@ -44,7 +57,8 @@ function formatAbonnes(n: string | null): string {
 	<h2 class="titre">Ils me font <span>confiance</span></h2>
 	<div class="grille-avis">
 	<a v-for="(info, i) in avis" :key="`${info.id}-${i}`"
-		:href="info.url" target="_blank" class="cards">
+   :href="info.url" target="_blank" class="cards"
+   :style="{ '--delay': Math.min(i * 90) + 'ms' }">
 
 		<!-- en-tête : la chaîne -->
 		<div class="card-entete">
@@ -82,9 +96,9 @@ function formatAbonnes(n: string | null): string {
 }
 
 .cards {
-  text-decoration: none;     /* 👈 pas de soulignement */
-  color: inherit;            /* 👈 garde tes couleurs de texte */
-  cursor: pointer;           /* 👈 curseur main sur toute la carte */
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
   align-items: stretch;
   display: flex;
   flex-direction: column;
@@ -94,13 +108,23 @@ function formatAbonnes(n: string | null): string {
   border-radius: 1.25rem;
   padding: 1.5rem;
   box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.08);
-  transition: transform .2s, border-color .2s, box-shadow .2s;
+  opacity: 0;
+  transform: translateY(1.5rem) scale(0.96);
+    transition: opacity .5s ease var(--delay),
+              transform .5s cubic-bezier(.22,1,.36,1) var(--delay),
+              border-color .2s, box-shadow .2s;
+}
+
+.cards.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .cards:hover {
   transform: translateY(-0.25rem);
   border-color: rgba(var(--accent-rgb), 0.4);
   box-shadow: 0 0.9rem 2rem rgba(var(--accent-rgb), 0.16);
+  transition: transform .2s ease, border-color .2s, box-shadow .2s;
 }
 
 /* en-tête : la chaîne */
