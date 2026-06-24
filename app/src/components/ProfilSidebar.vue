@@ -12,7 +12,7 @@ const segments = [
 ]
 
 const lettresAffichees = ref(0)
-const curseurVisible = ref(true)
+const termine = ref(false)
 const total = segments.reduce((n, s) => n + s.t.length, 0)
 
 function texteVisible(index: number): string {
@@ -28,7 +28,7 @@ onMounted(() => {
     lettresAffichees.value++
     if (lettresAffichees.value >= total) {
       clearInterval(timer)
-      setTimeout(() => { curseurVisible.value = false }, 1000)
+      termine.value = true
     }
   }, 45)
 })
@@ -75,7 +75,7 @@ function brillance(e: Event) {
             v-if="seg.kw"
             :class="{ 'mot-anime': seg.anime }"
             @click="seg.anime && brillance($event)">{{ texteVisible(i) }}</span><template
-            v-else>{{ texteVisible(i) }}</template></template><span v-if="curseurVisible" class="curseur"></span>
+            v-else>{{ texteVisible(i) }}</template></template><span v-if="!termine" class="curseur"></span>
       </p>
       <p class="bio">Monteuse indépendante, je m'adapte à tous vos formats avec une obsession : capter et garder l'attention.</p>
     </div>
