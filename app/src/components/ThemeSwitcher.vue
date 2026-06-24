@@ -29,8 +29,9 @@ const backgrounds = [
   { id: 'ardoise', nom: 'Ardoise', couleur: '#1b2430' },
 ]
 
-const themeActif = ref(localStorage.getItem('theme') || 'violet')
-const bgActif = ref(localStorage.getItem('bg') || 'sombre')
+// Thème verrouillé sur Sombre + Violet : on ignore la valeur mémorisée dans localStorage.
+const themeActif = ref(/* localStorage.getItem('theme') || */ 'violet')
+const bgActif = ref(/* localStorage.getItem('bg') || */ 'sombre')
 
 watch(themeActif, (id) => {
   document.documentElement.setAttribute('data-theme', id)
@@ -41,9 +42,14 @@ watch(bgActif, (id) => {
   document.documentElement.setAttribute('data-bg', id)
   localStorage.setItem('bg', id)
 }, { immediate: true })
+
+// Conservés pour réactiver le sélecteur de thème (template commenté plus bas).
+void themes
+void backgrounds
 </script>
 
 <template>
+  <!-- Sélecteur de thème masqué : thème verrouillé sur Sombre + Violet.
   <div class="theme-switcher">
     <button class="trigger" aria-label="Changer le thème" aria-haspopup="true">
       <i class="fa-solid fa-palette"></i>
@@ -81,6 +87,8 @@ watch(bgActif, (id) => {
       </div>
     </div>
   </div>
+  -->
+  <span style="display: none"></span>
 </template>
 
 <style scoped>
