@@ -1,3 +1,5 @@
 node_modules/
 .env
-avis.db
+backend/avis.db
+backend/avis.db.*
+backend/verif.db
