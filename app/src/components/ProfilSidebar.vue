@@ -437,7 +437,6 @@ function brillance(e: Event) {
     width: 100%;
     position: static;
     background: rgba(var(--accent-rgb), 0.04);
-    border-radius: 0 0 1.5rem 1.5rem;   /* coins arrondis en bas */
     padding-bottom: 2rem;
   }
   .intro { max-width: 90%; }
