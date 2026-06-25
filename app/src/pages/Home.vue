@@ -55,7 +55,7 @@ body {
     height: auto;
   }
   body {
-    background-attachment: scroll;   /* le fond défile avec le contenu */
+    background-attachment: scroll;
   }
 }
 </style>

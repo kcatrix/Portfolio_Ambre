@@ -439,5 +439,8 @@ function brillance(e: Event) {
   }
   .intro { max-width: 90%; }
   .skills { max-width: 100%; }
+  .bio {
+    margin: 0.625rem 0;
+  }
 }
 </style>

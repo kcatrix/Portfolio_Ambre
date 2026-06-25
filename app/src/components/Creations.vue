@@ -127,7 +127,7 @@ const Videofiltrer = computed(() =>
 
 @media (max-width: 56.25rem) {
   .video-container {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     }
   .video-container.grille-shorts {
     grid-template-columns: repeat(2, 1fr);
