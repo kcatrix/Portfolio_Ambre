@@ -45,4 +45,14 @@ body {
   margin: 1.25rem auto;
   background: linear-gradient(to right, transparent, rgba(var(--accent-rgb), 0.6), transparent);
 }
+
+@media (max-width: 56.25rem) {
+  .contenu{
+    flex-direction: column;
+    overflow-y: visible;
+  }
+  #app {
+    height: auto;
+  }
+}
 </style>

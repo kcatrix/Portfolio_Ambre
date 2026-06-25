@@ -139,6 +139,13 @@ function brillance(e: Event) {
   position: sticky;
 }
 
+@media (max-width: 56.25rem) {
+  .gauche {
+    width: 100%;          /* pleine largeur au lieu de 28.125rem figés */
+    position: static;     /* annule le sticky → la sidebar suit le flux normal */
+  }
+}
+
 .intro {
   max-width: 21.25rem;
   text-align: center;
