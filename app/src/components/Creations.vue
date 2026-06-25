@@ -53,15 +53,15 @@ const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.va
 
         <div class="version-mobile">
         <template v-if="montrerShorts">
-          <div class="rangee-shorts">
-            <VideoCard v-for="v in slider1" :key="v.IdVideo" :video="v" />
-          </div>
-          <div class="rangee-shorts">
-            <VideoCard v-for="v in slider2" :key="v.IdVideo" :video="v" />
+          <div class="double-carrousel">
+            <div class="ligne-shorts">
+              <VideoCard v-for="v in slider1" :key="v.IdVideo" :video="v" />
+            </div>
+            <div class="ligne-shorts">
+              <VideoCard v-for="v in slider2" :key="v.IdVideo" :video="v" />
+            </div>
           </div>
         </template>
-
-        <!-- mode Vidéos : grille simple -->
         <div v-else class="video-container">
           <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
         </div>
@@ -162,16 +162,18 @@ const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.va
   .version-mobile { display: block; }   /* montre les carrousels */
 }
 
-.rangee-shorts {
-  display: flex;
-  gap: 0.75rem;
-  overflow-x: auto;
+.double-carrousel {
+  overflow-x: auto;                 /* LE scroll, une seule fois */
   scroll-snap-type: x mandatory;
   padding: 0.625rem;
-  margin-bottom: 0.5rem;
 }
-.rangee-shorts .video-card {
-  flex: 0 0 46%;              /* 2 shorts par écran + un bout qui dépasse */
+.ligne-shorts {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.ligne-shorts .video-card {
+  flex: 0 0 46%;
   scroll-snap-align: start;
 }
 
