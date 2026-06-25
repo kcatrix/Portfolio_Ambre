@@ -50,8 +50,8 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
         <AvisPreview />
       <Transition name="video" mode="out-in" appear>
         <!-- version desktop : grille normale -->
-        <div class="version-desktop">
-          <div class="video-container grille-shorts">
+        <div class="version-desktop" :key="String(montrerShorts)">
+          <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
             <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
           </div>
         </div>
