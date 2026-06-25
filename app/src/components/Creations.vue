@@ -22,10 +22,12 @@ onMounted(async () => {
 const Videofiltrer = computed(() =>
   videos.value.filter(video => montrerShorts.value ? video.short : !video.short)
 )
+const videosLongues = computed(() => videos.value.filter(v => !v.short))
 
-const moitie = computed(() => Math.ceil(videos.value.filter(v => v.short).length / 2))
-const slider1 = computed(() => videos.value.filter(v => v.short).slice(0, moitie.value))
-const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.value))
+const tiers = computed(() => Math.ceil(videos.value.filter(v => !v.short).length / 3))
+const videoLigne1 = computed(() => videos.value.filter(v => !v.short).slice(0, tiers.value))
+const videoLigne2 = computed(() => videos.value.filter(v => !v.short).slice(tiers.value, tiers.value * 2))
+const videoLigne3 = computed(() => videos.value.filter(v => !v.short).slice(tiers.value * 2))
 
 </script>
 
@@ -53,18 +55,29 @@ const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.va
 
         <div class="version-mobile">
         <template v-if="montrerShorts">
-          <div class="double-carrousel">
-            <div class="ligne-shorts">
-              <VideoCard v-for="v in slider1" :key="v.IdVideo" :video="v" />
-            </div>
-            <div class="ligne-shorts">
-              <VideoCard v-for="v in slider2" :key="v.IdVideo" :video="v" />
-            </div>
+          <div class="carrousel-shorts">
+            <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
           </div>
         </template>
-        <div v-else class="video-container">
-          <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
+        <div v-else>
+  <!-- plus de 3 vidéos : triple carrousel -->
+        <div v-if="videosLongues.length > 3" class="triple-carrousel">
+          <div class="ligne-videos">
+            <VideoCard v-for="v in videoLigne1" :key="v.IdVideo" :video="v" />
+          </div>
+          <div class="ligne-videos">
+            <VideoCard v-for="v in videoLigne2" :key="v.IdVideo" :video="v" />
+          </div>
+          <div class="ligne-videos">
+            <VideoCard v-for="v in videoLigne3" :key="v.IdVideo" :video="v" />
+          </div>
         </div>
+
+        <!-- 3 ou moins : simple empilement -->
+        <div v-else class="video-container">
+          <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
+        </div>
+      </div>
       </div>
       <div class="AvisComplet">
           <AvisComplet />
@@ -162,18 +175,30 @@ const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.va
   .version-mobile { display: block; }   /* montre les carrousels */
 }
 
-.double-carrousel {
-  overflow-x: auto;                 /* LE scroll, une seule fois */
+.carrousel-shorts {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding: 0.625rem;
 }
-.ligne-shorts {
+.carrousel-shorts .video-card {
+  flex: 0 0 31%;             /* 3 shorts visibles à l'écran */
+  scroll-snap-align: start;
+}
+
+.triple-carrousel {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.625rem;
+}
+.ligne-videos {
   display: flex;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
 }
-.ligne-shorts .video-card {
-  flex: 0 0 46%;
+.ligne-videos .video-card {
+  flex: 0 0 90%;              /* 1 vidéo par écran (90% + un bout du suivant) */
   scroll-snap-align: start;
 }
 
