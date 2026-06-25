@@ -100,7 +100,7 @@ function brillance(e: Event) {
         <div class="logiciel" style="--a: 240deg"><img src="/au.svg" alt="Audition"></div>
       </div>
     </div>
-    <hr class="separateur">
+    <hr class="separateur separateur-socials">
     <div class="socials">
       <a href="https://x.com/Sorc_Montage?s=20" target="_blank" rel="noopener" class="social">
         <i class="fa-brands fa-x-twitter"></i>
@@ -439,9 +439,12 @@ function brillance(e: Event) {
     padding-bottom: 2rem;
   }
   .intro { max-width: 90%; }
-  .skills { max-width: 100%; }
+  .skills { max-width: 100%; margin-bottom: 16px; }
   .bio {
     margin: 0.625rem 0;
+  }
+  .separateur-socials {
+    display: none;
   }
 }
 </style>

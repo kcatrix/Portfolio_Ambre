@@ -11,6 +11,7 @@ import BoutonHaut from '../components/BoutonHaut.vue'
   <ThemeSwitcher />
   <main class="contenu">
     <ProfilSidebar />
+    <hr class="separateur separateur-mobile">
     <Creations />
   </main>
   <BoutonHaut />
@@ -48,7 +49,11 @@ body {
   background: linear-gradient(to right, transparent, rgba(var(--accent-rgb), 0.6), transparent);
 }
 
+/* Diviseur entre profil et créations, visible uniquement en colonne (mobile). */
+.separateur-mobile { display: none; }
+
 @media (max-width: 56.25rem) {
+  .separateur-mobile { display: block; }
   .contenu{
     flex-direction: column;
     overflow-y: visible;

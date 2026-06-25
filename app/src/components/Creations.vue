@@ -41,7 +41,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
       <h2>Mes créations</h2>
     </div>
     <div>
-      <hr class="separateur">
+      <hr class="separateur separateur-haut">
       <div class="segment" :class="{ 'sur-videos': !montrerShorts }">
         <div class="indicateur"></div>
         <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
@@ -182,6 +182,9 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
     }
   .version-desktop { display: none; }   /* sur mobile : cache la grille */
   .version-mobile { display: block; }   /* montre les carrousels */
+  .separateur-haut {
+    display: none;
+  }
 }
 
 .double-carrousel {
