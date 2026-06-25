@@ -125,6 +125,15 @@ const Videofiltrer = computed(() =>
   grid-template-columns: repeat(4, 1fr);
 }
 
+@media (max-width: 56.25rem) {
+  .video-container {
+    grid-template-columns: 1fr;
+    }
+  .video-container.grille-shorts {
+    grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 .video-enter-active, .video-leave-active { transition: all 0.5s ease; }
 .video-enter-from, .video-leave-to { opacity: 0; filter: blur(0.75rem); }
 
