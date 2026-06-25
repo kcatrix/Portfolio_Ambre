@@ -27,6 +27,12 @@ const moitie = computed(() => Math.ceil(videos.value.filter(v => v.short).length
 const slider1 = computed(() => videos.value.filter(v => v.short).slice(0, moitie.value))
 const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.value))
 
+// vidéos longues réparties sur 3 lignes (carrousel)
+const videosLongues = computed(() => videos.value.filter(v => !v.short))
+const videoLigne1 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 0))
+const videoLigne2 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 1))
+const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 2))
+
 </script>
 
 <template>
@@ -62,9 +68,25 @@ const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.va
             </div>
           </div>
         </template>
-        <div v-else class="video-container">
-          <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
-        </div>
+        <template v-else>
+          <!-- plus de 3 vidéos : carrousel sur 3 lignes -->
+          <div v-if="videosLongues.length > 3" class="triple-carrousel">
+            <div class="ligne-videos">
+              <VideoCard v-for="v in videoLigne1" :key="v.IdVideo" :video="v" />
+            </div>
+            <div class="ligne-videos">
+              <VideoCard v-for="v in videoLigne2" :key="v.IdVideo" :video="v" />
+            </div>
+            <div class="ligne-videos">
+              <VideoCard v-for="v in videoLigne3" :key="v.IdVideo" :video="v" />
+            </div>
+          </div>
+
+          <!-- 3 ou moins : empilement simple -->
+          <div v-else class="video-container">
+            <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
+          </div>
+        </template>
       </div>
       <div class="AvisComplet">
           <AvisComplet />
@@ -174,6 +196,21 @@ const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.va
 }
 .ligne-shorts .video-card {
   flex: 0 0 46%;
+  scroll-snap-align: start;
+}
+
+.triple-carrousel {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.625rem;
+}
+.ligne-videos {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.ligne-videos .video-card {
+  flex: 0 0 90%;             /* 1 vidéo par écran + un bout du suivant */
   scroll-snap-align: start;
 }
 
