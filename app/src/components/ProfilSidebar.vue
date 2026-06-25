@@ -436,7 +436,6 @@ function brillance(e: Event) {
   .gauche {
     width: 100%;
     position: static;
-    background: rgba(var(--accent-rgb), 0.04);
     padding-bottom: 2rem;
   }
   .intro { max-width: 90%; }
