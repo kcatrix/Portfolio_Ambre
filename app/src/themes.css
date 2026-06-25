@@ -128,3 +128,26 @@ html {
   letter-spacing: -0.03125rem;   /* resserre les lettres → look "punchy" */
   color: var(--text-fort);       /* suit le thème (était #1a1a1a -> invisible en sombre) */
 }
+
+/* ============================================================
+   CONFORT TACTILE (mobile)
+   ------------------------------------------------------------
+   1. Supprime le carré gris/bleu que mobile dessine au tap.
+   2. Empêche la sélection de texte sur les éléments cliquables
+      (photo, accroche animée, boutons, liens, bandeau d'avis).
+      Les champs de formulaire et le texte des avis restent,
+      eux, librement sélectionnables.
+   ============================================================ */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+.photo-profil,
+.accroche,
+.avis,
+.segment {
+  -webkit-user-select: none;
+  user-select: none;
+}
