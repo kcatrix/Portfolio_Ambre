@@ -10,10 +10,6 @@ const chargee = ref(false)
 function lienEmbed(id: string) {
   return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1`
 }
-
-function playVideo() {
-  window.open(`https://www.youtube.com/watch?v=${props.video.IdVideo}`, '_blank')
-}
 </script>
 
 <template>
@@ -27,7 +23,12 @@ function playVideo() {
         loading="lazy"
         @load="chargee = true">
       </iframe>
-      <div class="overlay" @click="playVideo"></div>
+      <a
+        class="overlay"
+        :href="`https://www.youtube.com/watch?v=${video.IdVideo}`"
+        target="_blank"
+        rel="noopener"
+        aria-label="Ouvrir la vidéo sur YouTube"></a>
     </div>
   </div>
 </template>
@@ -70,6 +71,7 @@ function playVideo() {
 .overlay {
   position: absolute;
   inset: 0;
+  display: block;
   cursor: pointer;
 }
 </style>
