@@ -111,7 +111,7 @@ function brillance(e: Event) {
       <a href="https://www.instagram.com/sorc.montage/" target="_blank" rel="noopener" class="social">
         <i class="fa-brands fa-instagram"></i>
       </a>
-      <a href="https://discord.gg/INVITATION" target="_blank" rel="noopener" class="social">
+      <a href="https://discordapp.com/users/1192925709459533914" target="_blank" rel="noopener" class="social">
         <i class="fa-brands fa-discord"></i>
       </a>
     </div>
