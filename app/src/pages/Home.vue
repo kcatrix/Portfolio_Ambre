@@ -3,6 +3,7 @@ import ProfilSidebar from '../components/ProfilSidebar.vue'
 import Creations from '../components/Creations.vue'
 import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 import BullesFond from '../components/BullesFond.vue'
+import BoutonHaut from '../components/BoutonHaut.vue'
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import BullesFond from '../components/BullesFond.vue'
     <ProfilSidebar />
     <Creations />
   </main>
+  <BoutonHaut />
 </template>
 
 <style>
