@@ -22,6 +22,11 @@ onMounted(async () => {
 const Videofiltrer = computed(() =>
   videos.value.filter(video => montrerShorts.value ? video.short : !video.short)
 )
+
+const moitie = computed(() => Math.ceil(videos.value.filter(v => v.short).length / 2))
+const slider1 = computed(() => videos.value.filter(v => v.short).slice(0, moitie.value))
+const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.value))
+
 </script>
 
 <template>
@@ -38,10 +43,29 @@ const Videofiltrer = computed(() =>
       </div>
         <AvisPreview />
       <Transition name="video" mode="out-in" appear>
-        <div class="video-container" v-if="Videofiltrer.length" :class="{ 'grille-shorts': montrerShorts }" :key="String(montrerShorts)">
-          <VideoCard v-for="video in Videofiltrer" :key="video.IdVideo" :video="video" />
+        <!-- version desktop : grille normale -->
+        <div class="version-desktop">
+          <div class="video-container grille-shorts">
+            <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
+          </div>
         </div>
       </Transition>
+
+        <div class="version-mobile">
+        <template v-if="montrerShorts">
+          <div class="rangee-shorts">
+            <VideoCard v-for="v in slider1" :key="v.IdVideo" :video="v" />
+          </div>
+          <div class="rangee-shorts">
+            <VideoCard v-for="v in slider2" :key="v.IdVideo" :video="v" />
+          </div>
+        </template>
+
+        <!-- mode Vidéos : grille simple -->
+        <div v-else class="video-container">
+          <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
+        </div>
+      </div>
       <div class="AvisComplet">
           <AvisComplet />
       </div>
@@ -125,6 +149,8 @@ const Videofiltrer = computed(() =>
   grid-template-columns: repeat(4, 1fr);
 }
 
+.version-mobile { display: none; }   /* caché par défaut (desktop) */
+
 @media (max-width: 56.25rem) {
   .video-container {
     grid-template-columns: 1fr;
@@ -132,7 +158,23 @@ const Videofiltrer = computed(() =>
   .video-container.grille-shorts {
     grid-template-columns: repeat(2, 1fr);
     }
+  .version-desktop { display: none; }   /* sur mobile : cache la grille */
+  .version-mobile { display: block; }   /* montre les carrousels */
 }
+
+.rangee-shorts {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.625rem;
+  margin-bottom: 0.5rem;
+}
+.rangee-shorts .video-card {
+  flex: 0 0 46%;              /* 2 shorts par écran + un bout qui dépasse */
+  scroll-snap-align: start;
+}
+
 
 .video-enter-active, .video-leave-active { transition: all 0.5s ease; }
 .video-enter-from, .video-leave-to { opacity: 0; filter: blur(0.75rem); }
