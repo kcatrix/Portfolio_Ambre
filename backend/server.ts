@@ -40,15 +40,22 @@ app.use((req, res, next) => {
 })
 
 app.get('/api/videos', async (req, res) => {
-  const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&playlistId=${PLAYLIST_ID}&key=${CLE_API}`)
-  const data = await response.json()
-  const video = data.items.map(item => ({
-    titre: item.snippet.title,
-    IdVideo: item.snippet.resourceId.videoId,
-    thumbnails: item.snippet.thumbnails.medium.url,
-    short: item.snippet.description.includes('#short')
-  }))
-  res.json(video)
+  const videos = []
+  let pageToken = ''
+
+  do {
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${PLAYLIST_ID}&key=${CLE_API}&pageToken=${pageToken}`)
+    const data = await response.json()
+    videos.push(...data.items.map((item: any) => ({
+      titre: item.snippet.title,
+      IdVideo: item.snippet.resourceId.videoId,
+      thumbnails: item.snippet.thumbnails.medium.url,
+      short: item.snippet.description.includes('#short')
+    })))
+    pageToken = data.nextPageToken ?? ''
+  } while (pageToken)
+
+  res.json(videos)
 })
 
 app.get('/api/avis' , async (req, res) => {
