@@ -92,7 +92,10 @@ const Videofiltrer = computed(() =>
 )
 
 const shortsFiltres = computed(() => videosApresTags.value.filter(v => v.short))
-const moitie = computed(() => Math.ceil(shortsFiltres.value.length / 2))
+const moitie = computed(() => {
+  const total = shortsFiltres.value.length
+  return total <= 2 ? total : Math.ceil(total / 2)
+})
 const slider1 = computed(() => shortsFiltres.value.slice(0, moitie.value))
 const slider2 = computed(() => shortsFiltres.value.slice(moitie.value))
 
@@ -151,13 +154,13 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
         <div class="version-mobile">
         <template v-if="montrerShorts">
           <div class="double-carrousel">
-            <div class="ligne-shorts">
-              <VideoCard v-for="v in slider1" :key="v.IdVideo" :video="v" />
-            </div>
-            <div class="ligne-shorts">
-              <VideoCard v-for="v in slider2" :key="v.IdVideo" :video="v" />
-            </div>
+          <div class="ligne-shorts">
+            <VideoCard v-for="v in slider1" :key="v.IdVideo" :video="v" />
           </div>
+          <div class="ligne-shorts" v-if="slider2.length > 0">
+            <VideoCard v-for="v in slider2" :key="v.IdVideo" :video="v" />
+          </div>
+        </div>
         </template>
         <template v-else>
           <!-- plus de 3 vidéos : carrousel sur 3 lignes -->
