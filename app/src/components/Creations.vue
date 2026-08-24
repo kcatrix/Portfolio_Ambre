@@ -121,11 +121,11 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
           <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
         </div>
 
-        <button class="btn-filtre" @click="gererClicFiltre">
+        <button class="btn-filtre" :class="{ 'btn-rouge': filtresActifs.length > 0 }" @click="gererClicFiltre">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
           </svg>
-          <span>{{ filtresActifs.length > 0 ? 'Effacer filtres' : 'Filtres' }}</span>
+          <span >{{ filtresActifs.length > 0 ? 'Effacer filtres' : 'Filtres' }}</span>
         </button>
       </div>
       <div class="panneau-wrapper" :class="{ 'ouvert': menuFiltresOuvert }">
@@ -328,6 +328,18 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   /* On cache le texte, on ne garde que le SVG */
   .btn-filtre span {
     display: none;
+  }
+
+  /* --- Bouton Effacer en Rouge --- */
+  .btn-filtre.btn-rouge {
+    background: rgba(239, 68, 68, 0.1);      /* Fond rouge très léger */
+    border-color: rgba(239, 68, 68, 0.3);    /* Bordure rouge un peu plus visible */
+    color: #ef4444;                          /* Texte rouge */
+  }
+
+  .btn-filtre.btn-rouge:hover {
+    background: rgba(239, 68, 68, 0.2);      /* S'assombrit légèrement au survol */
+    border-color: rgba(239, 68, 68, 0.5);
   }
   /* ------------------------------------------------ */
 
