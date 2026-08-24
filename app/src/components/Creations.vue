@@ -128,19 +128,21 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
           <span>{{ filtresActifs.length > 0 ? 'Effacer filtres' : 'Filtres' }}</span>
         </button>
       </div>
-      <Transition name="fade">
-              <div v-if="menuFiltresOuvert" class="panneau-pastilles">
-                <button 
-                  v-for="cat in categories" 
-                  :key="cat" 
-                  class="pastille"
-                  :class="{ active: filtresActifs.includes(cat) }"
-                  @click="toggleFiltre(cat)"
-                >
-                  {{ cat }}
-                </button>
-              </div>
-      </Transition>
+      <div class="panneau-wrapper" :class="{ 'ouvert': menuFiltresOuvert }">
+        <div class="panneau-inner">
+          <div class="panneau-pastilles">
+            <button 
+              v-for="cat in categories" 
+              :key="cat" 
+              class="pastille"
+              :class="{ active: filtresActifs.includes(cat) }"
+              @click="toggleFiltre(cat)"
+            >
+              {{ cat }}
+            </button>
+          </div>
+        </div>
+      </div>
 <AvisPreview />
       <Transition name="video" mode="out-in" appear>
         <!-- version desktop : grille normale -->
@@ -412,11 +414,37 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   border-color: var(--accent);
 }
 
-.fade-enter-active, .fade-leave-active { 
-  transition: opacity 0.3s ease, transform 0.3s ease; 
+/* --- Animation de hauteur fluide --- */
+.panneau-wrapper {
+  display: grid;
+  grid-template-rows: 0fr; /* Par défaut, la hauteur est écrasée à 0 */
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.fade-enter-from, .fade-leave-to { 
-  opacity: 0; 
-  transform: translateY(-10px); 
+
+.panneau-wrapper.ouvert {
+  grid-template-rows: 1fr; /* Quand c'est ouvert, ça prend la hauteur de son contenu */
+}
+
+.panneau-inner {
+  overflow: hidden; /* Empêche le contenu de déborder pendant que ça glisse */
+  min-height: 0;
+}
+
+/* On garde le style des pastilles, mais on ajoute un fondu à l'intérieur de l'ouverture */
+.panneau-pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0 1.25rem 1rem 1.25rem;
+  
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panneau-wrapper.ouvert .panneau-pastilles {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
