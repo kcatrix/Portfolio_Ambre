@@ -302,6 +302,18 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 
 .version-mobile { display: none; }   /* caché par défaut (desktop) */
 
+  /* --- Bouton Effacer en Rouge --- */
+  .btn-filtre.btn-rouge {
+    background: rgba(239, 68, 68, 0.1);      /* Fond rouge très léger */
+    border-color: rgba(239, 68, 68, 0.3);    /* Bordure rouge un peu plus visible */
+    color: #ef4444;                          /* Texte rouge */
+  }
+
+  .btn-filtre.btn-rouge:hover {
+    background: rgba(239, 68, 68, 0.2);      /* S'assombrit légèrement au survol */
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
 @media (max-width: 56.25rem) {
   /* --- Ajout pour centrer les boutons sur mobile --- */
   .barre-filtres {
@@ -330,17 +342,6 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
     display: none;
   }
 
-  /* --- Bouton Effacer en Rouge --- */
-  .btn-filtre.btn-rouge {
-    background: rgba(239, 68, 68, 0.1);      /* Fond rouge très léger */
-    border-color: rgba(239, 68, 68, 0.3);    /* Bordure rouge un peu plus visible */
-    color: #ef4444;                          /* Texte rouge */
-  }
-
-  .btn-filtre.btn-rouge:hover {
-    background: rgba(239, 68, 68, 0.2);      /* S'assombrit légèrement au survol */
-    border-color: rgba(239, 68, 68, 0.5);
-  }
   /* ------------------------------------------------ */
 
   .video-container {
