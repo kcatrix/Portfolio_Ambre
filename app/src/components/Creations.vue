@@ -43,6 +43,16 @@ const categories = computed(() => {
   return Array.from(setCategories)
 })
 
+const menuFiltresOuvert = ref(false)
+
+const filtresActifs = ref<string[]>([])
+
+const toggleFiltre = (cat: string) => {
+  filtresActifs.value = filtresActifs.value.includes(cat)
+    ? filtresActifs.value.filter(c => c !== cat)
+    : [...filtresActifs.value, cat]
+}
+
 const Videofiltrer = computed(() =>
   videos.value.filter(video => montrerShorts.value ? video.short : !video.short)
 )
@@ -73,14 +83,26 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
           <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
         </div>
 
-        <button class="btn-filtre">
+        <button class="btn-filtre" @click="menuFiltresOuvert = !menuFiltresOuvert">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
           </svg>
           <span>Filtres</span>
         </button>
-</div>
-
+      </div>
+      <Transition name="fade">
+              <div v-if="menuFiltresOuvert" class="panneau-pastilles">
+                <button 
+                  v-for="cat in categories" 
+                  :key="cat" 
+                  class="pastille"
+                  :class="{ active: filtresActifs.includes(cat) }"
+                  @click="toggleFiltre(cat)"
+                >
+                  {{ cat }}
+                </button>
+              </div>
+      </Transition>
 <AvisPreview />
       <Transition name="video" mode="out-in" appear>
         <!-- version desktop : grille normale -->
@@ -293,5 +315,42 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 }
 .AvisComplet .separateur{
   margin-top: 1.7rem;
+}
+
+.panneau-pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0 1.25rem 1rem 1.25rem;
+}
+
+.pastille {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-doux);
+  padding: 0.4rem 1rem;
+  border-radius: 62.4375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pastille:hover { 
+  background: rgba(255, 255, 255, 0.1); 
+}
+
+.pastille.active {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+.fade-enter-active, .fade-leave-active { 
+  transition: opacity 0.3s ease, transform 0.3s ease; 
+}
+.fade-enter-from, .fade-leave-to { 
+  opacity: 0; 
+  transform: translateY(-10px); 
 }
 </style>
