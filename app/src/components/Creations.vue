@@ -7,6 +7,7 @@ import AvisComplet from './AvisComplet.vue'
 interface Video {
   IdVideo: string
   short: boolean
+  description?: string
 }
 
 const videos = ref<Video[]>([])
@@ -17,6 +18,29 @@ const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 onMounted(async () => {
   const response = await fetch(`${apiUrl}/api/videos`)
   videos.value = await response.json()
+})
+
+const categories = computed(() => {
+  const setCategories = new Set<string>()
+
+  for (const video of videos.value) {
+    if (!video.description) continue
+
+    // Cherche un bloc qui commence par "_" jusqu'au premier espace ou saut de ligne
+    const match = video.description.match(/_([^\s\n\r]+)/)
+    if (match && match[1]) {
+      // Sépare par les virgules (ex: "Gaming,économie" -> ["Gaming", "économie"])
+      const tags = match[1].split(',')
+      for (const tag of tags) {
+        const propre = tag.trim()
+        if (propre) {
+          setCategories.add(propre)
+        }
+      }
+    }
+  }
+
+  return Array.from(setCategories)
 })
 
 const Videofiltrer = computed(() =>
@@ -42,12 +66,22 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
     </div>
     <div>
       <hr class="separateur separateur-haut">
-      <div class="segment" :class="{ 'sur-videos': !montrerShorts }">
-        <div class="indicateur"></div>
-        <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
-        <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
-      </div>
-        <AvisPreview />
+      <div class="barre-filtres">
+        <div class="segment" :class="{ 'sur-videos': !montrerShorts }">
+          <div class="indicateur"></div>
+          <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
+          <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
+        </div>
+
+        <button class="btn-filtre">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+          </svg>
+          <span>Filtres</span>
+        </button>
+</div>
+
+<AvisPreview />
       <Transition name="video" mode="out-in" appear>
         <!-- version desktop : grille normale -->
         <div class="version-desktop" :key="String(montrerShorts)">
@@ -117,7 +151,16 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   margin-top: 0.0625rem;
 }
 
+.barre-filtres {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* 3 colonnes : gauche(vide), centre, droite */
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0 1.5rem 0;
+}
+
 .segment {
+  grid-column: 2; /* Force le sélecteur dans la colonne centrale */
   position: relative;
   display: flex;
   width: fit-content;
@@ -125,6 +168,30 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   padding: 0.3125rem;
   background: var(--surface);
   border-radius: 62.4375rem;
+}
+
+.btn-filtre {
+  justify-self: end; /* Se place au début de la zone droite, juste à côté du segment */
+  margin-right: 10rem;   /* Ajuste cet espace si tu veux le rapprocher ou l'éloigner */
+  
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.375rem;
+  padding: 0 1.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 62.4375rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filtre:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .indicateur {

@@ -50,7 +50,8 @@ app.get('/api/videos', async (req, res) => {
       titre: item.snippet.title,
       IdVideo: item.snippet.resourceId.videoId,
       thumbnails: item.snippet.thumbnails.medium.url,
-      short: item.snippet.description.includes('#short')
+      short: item.snippet.description.includes('#short'),
+      description: item.snippet.description
     })))
     pageToken = data.nextPageToken ?? ''
   } while (pageToken)
