@@ -238,7 +238,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   
   display: inline-flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: 0.5rem;
   height: 2.375rem;
   padding: 0 1.25rem;
   background: rgba(255, 255, 255, 0.08);
@@ -402,7 +402,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 1.75rem;
   padding: 0 1.25rem 1rem 1.25rem;
 }
 
