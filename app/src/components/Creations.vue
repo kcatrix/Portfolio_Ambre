@@ -418,7 +418,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 .panneau-wrapper {
   display: grid;
   grid-template-rows: 0fr; /* Par défaut, la hauteur est écrasée à 0 */
-  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: grid-template-rows 2.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .panneau-wrapper.ouvert {
