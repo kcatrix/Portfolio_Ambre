@@ -300,19 +300,19 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 @media (max-width: 56.25rem) {
   /* --- Ajout pour centrer les boutons sur mobile --- */
   .barre-filtres {
-    display: flex;
-    flex-direction: column; /* Empile les éléments l'un sous l'autre */
+    display: flex; /* Force l'affichage sur une ligne centrée */
     justify-content: center;
-    gap: 0.75rem; /* Espace entre Shorts/Vidéos et le bouton Filtres */
-    margin: 0.5rem 0 1rem 0;
-  }
-  .segment {
-    margin: 0 auto; /* S'assure que le sélecteur reste bien centré */
+    gap: 0.5rem;
   }
   .btn-filtre {
-    margin-right: 0; /* Annule la marge droite définie pour le desktop */
-    justify-self: center; /* Centre le bouton Filtres */
-    width: fit-content;
+    margin-left: 0;
+    padding: 0;
+    width: 2.375rem;
+    justify-content: center;
+  }
+  /* On cache tout le texte à l'intérieur du bouton sur mobile */
+  .btn-filtre span {
+    display: none !important; 
   }
   /* ------------------------------------------------ */
 
