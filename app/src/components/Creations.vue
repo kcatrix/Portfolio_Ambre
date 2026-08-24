@@ -298,14 +298,32 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 .version-mobile { display: none; }   /* caché par défaut (desktop) */
 
 @media (max-width: 56.25rem) {
+  /* --- Ajout pour centrer les boutons sur mobile --- */
+  .barre-filtres {
+    display: flex;
+    flex-direction: column; /* Empile les éléments l'un sous l'autre */
+    justify-content: center;
+    gap: 0.75rem; /* Espace entre Shorts/Vidéos et le bouton Filtres */
+    margin: 0.5rem 0 1rem 0;
+  }
+  .segment {
+    margin: 0 auto; /* S'assure que le sélecteur reste bien centré */
+  }
+  .btn-filtre {
+    margin-right: 0; /* Annule la marge droite définie pour le desktop */
+    justify-self: center; /* Centre le bouton Filtres */
+    width: fit-content;
+  }
+  /* ------------------------------------------------ */
+
   .video-container {
     grid-template-columns: 1fr;
-    }
+  }
   .video-container.grille-shorts {
     grid-template-columns: repeat(2, 1fr);
-    }
-  .version-desktop { display: none; }   /* sur mobile : cache la grille */
-  .version-mobile { display: block; }   /* montre les carrousels */
+  }
+  .version-desktop { display: none; }
+  .version-mobile { display: block; }
   .separateur-haut {
     display: none;
   }
