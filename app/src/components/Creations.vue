@@ -218,7 +218,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   grid-template-columns: 1fr auto 1fr; /* 3 colonnes : gauche(vide), centre, droite */
   align-items: center;
   width: 100%;
-  margin: 1rem 0 0 0;
+  margin: 1rem 0 0.5rem 0;
 }
 
 .segment {
