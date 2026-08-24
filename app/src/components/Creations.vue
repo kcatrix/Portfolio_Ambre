@@ -300,19 +300,29 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 @media (max-width: 56.25rem) {
   /* --- Ajout pour centrer les boutons sur mobile --- */
   .barre-filtres {
-    display: flex; /* Force l'affichage sur une ligne centrée */
-    justify-content: center;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
   }
+  
+  .segment {
+    grid-column: 2; /* Reste toujours au centre */
+  }
+
+  /* On rend le bouton compact et on l'approche du centre */
   .btn-filtre {
-    margin-left: 0;
+    grid-column: 3;
+    justify-self: start; /* On le colle à gauche de sa zone (donc près du centre) */
+    margin-right: 0;     /* On annule la marge du desktop */
+    margin-left: 0.75rem;/* Petit espace entre le sélecteur et le bouton */
     padding: 0;
-    width: 2.375rem;
+    width: 2.375rem;     /* Largeur fixe pour faire un carré/rond */
     justify-content: center;
   }
-  /* On cache tout le texte à l'intérieur du bouton sur mobile */
+
+  /* On cache le texte, on ne garde que le SVG */
   .btn-filtre span {
-    display: none !important; 
+    display: none;
   }
   /* ------------------------------------------------ */
 
