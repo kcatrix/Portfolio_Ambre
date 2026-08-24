@@ -402,8 +402,8 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
-  padding: 0 1.25rem 1rem 1.25rem;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem 1rem 1.25rem;
 }
 
 .pastille {
