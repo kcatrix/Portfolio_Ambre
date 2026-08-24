@@ -53,16 +53,51 @@ const toggleFiltre = (cat: string) => {
     : [...filtresActifs.value, cat]
 }
 
+// 1. ÉTAPE INTERMÉDIAIRE : On filtre toutes les vidéos selon les tags cochés
+const videosApresTags = computed(() => {
+  // Si aucun filtre n'est coché, on renvoie toutes les vidéos
+  if (filtresActifs.value.length === 0) return videos.value
+
+  return videos.value.filter(video => {
+    if (!video.description) return false
+
+    // On récupère les tags de la vidéo exactement comme on l'a fait pour extraire les catégories
+    const match = video.description.match(/_([^\s\n\r]+)/)
+    if (!match || !match[1]) return false
+    
+    const tagsVideo = match[1].split(',').map(t => t.trim())
+    
+    // On garde la vidéo si elle possède AU MOINS UN des tags sélectionnés par l'utilisateur (logique "OU")
+    return filtresActifs.value.some(filtreActif => tagsVideo.includes(filtreActif))
+  })
+})
+
+// Gère le clic sur le bouton "Filtres" principal
+const gererClicFiltre = () => {
+  if (filtresActifs.value.length > 0) {
+    // S'il y a des filtres actifs, on les efface tous
+    filtresActifs.value = []
+    // Optionnel : on ferme le menu en même temps
+    menuFiltresOuvert.value = false 
+  } else {
+    // Sinon (aucun filtre), on ouvre ou on ferme le menu normalement
+    menuFiltresOuvert.value = !menuFiltresOuvert.value
+  }
+}
+
+// 2. LA SUITE DU CODE SE BASE SUR "videosApresTags" AU LIEU DE "videos"
+
 const Videofiltrer = computed(() =>
-  videos.value.filter(video => montrerShorts.value ? video.short : !video.short)
+  videosApresTags.value.filter(video => montrerShorts.value ? video.short : !video.short)
 )
 
-const moitie = computed(() => Math.ceil(videos.value.filter(v => v.short).length / 2))
-const slider1 = computed(() => videos.value.filter(v => v.short).slice(0, moitie.value))
-const slider2 = computed(() => videos.value.filter(v => v.short).slice(moitie.value))
+const shortsFiltres = computed(() => videosApresTags.value.filter(v => v.short))
+const moitie = computed(() => Math.ceil(shortsFiltres.value.length / 2))
+const slider1 = computed(() => shortsFiltres.value.slice(0, moitie.value))
+const slider2 = computed(() => shortsFiltres.value.slice(moitie.value))
 
 // vidéos longues réparties sur 3 lignes (carrousel)
-const videosLongues = computed(() => videos.value.filter(v => !v.short))
+const videosLongues = computed(() => videosApresTags.value.filter(v => !v.short))
 const videoLigne1 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 0))
 const videoLigne2 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 1))
 const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 2))
@@ -83,11 +118,11 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
           <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
         </div>
 
-        <button class="btn-filtre" @click="menuFiltresOuvert = !menuFiltresOuvert">
+        <button class="btn-filtre" @click="gererClicFiltre">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
           </svg>
-          <span>Filtres</span>
+          <span>{{ filtresActifs.length > 0 ? 'Effacer filtres' : 'Filtres' }}</span>
         </button>
       </div>
       <Transition name="fade">
