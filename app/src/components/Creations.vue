@@ -314,7 +314,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
     grid-column: 3;
     justify-self: start; /* On le colle à gauche de sa zone (donc près du centre) */
     margin-right: 0;     /* On annule la marge du desktop */
-    margin-left: 0.75rem;/* Petit espace entre le sélecteur et le bouton */
+    margin-left: 1.75rem;/* Petit espace entre le sélecteur et le bouton */
     padding: 0;
     width: 2.375rem;     /* Largeur fixe pour faire un carré/rond */
     justify-content: center;
