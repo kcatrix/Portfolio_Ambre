@@ -449,7 +449,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
-  padding: 0 1.25rem 1rem 1.25rem;
+  padding: 2rem 1.25rem 1rem 1.25rem;
   
   opacity: 0;
   transform: translateY(-10px);
