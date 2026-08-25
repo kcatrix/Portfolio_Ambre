@@ -48,7 +48,7 @@ const menuFiltresOuvert = ref(false)
 const filtresActifs = ref<string[]>([])
 
 const toggleFiltre = (cat: string) => {
-  filtresActifs.value = [cat]
+  filtresActifs.value = filtresActifs.value.includes(cat) ? [] : [cat]
 }
 
 // 1. ÉTAPE INTERMÉDIAIRE : On filtre toutes les vidéos selon les tags cochés
