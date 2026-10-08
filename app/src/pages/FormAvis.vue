@@ -36,7 +36,7 @@ async function envoyer () {
 	if (response.ok)
 	{
 		send.value = true
-		setTimeout(() => { router.push('/') }, 4000)
+		setTimeout(() => { router.push('/') }, 1500)
 	}
 	else{
 		erreur.value = response.statusText
