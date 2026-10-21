@@ -100,18 +100,18 @@ function brillance(e: Event) {
         <div class="logiciel" style="--a: 240deg"><img src="/au.svg" alt="Audition"></div>
       </div>
     </div>
-    <hr class="separateur separateur-socials">
-    <div class="socials">
-      <a href="https://x.com/Sorc_Montage?s=20" target="_blank" rel="noopener" class="social">
+    <hr class="separateur separateur-liens">
+    <div class="liens-externes">
+      <a href="https://x.com/Sorc_Montage?s=20" target="_blank" rel="noopener" class="lien-externe" aria-label="X (Twitter)">
         <i class="fa-brands fa-x-twitter"></i>
       </a>
-      <a href="https://www.youtube.com/@SorcMontage" target="_blank" rel="noopener" class="social">
+      <a href="https://www.youtube.com/@SorcMontage" target="_blank" rel="noopener" class="lien-externe" aria-label="YouTube">
         <i class="fa-brands fa-youtube"></i>
       </a>
-      <a href="https://www.instagram.com/sorc.montage/" target="_blank" rel="noopener" class="social">
+      <a href="https://www.instagram.com/sorc.montage/" target="_blank" rel="noopener" class="lien-externe" aria-label="Instagram">
         <i class="fa-brands fa-instagram"></i>
       </a>
-      <a href="https://discordapp.com/users/1192925709459533914" target="_blank" rel="noopener" class="social">
+      <a href="https://discordapp.com/users/1192925709459533914" target="_blank" rel="noopener" class="lien-externe" aria-label="Discord">
         <i class="fa-brands fa-discord"></i>
       </a>
     </div>
@@ -303,13 +303,13 @@ function brillance(e: Event) {
   }
 }
 
-.socials {
+.liens-externes {
   display: flex;
   gap: 0.875rem;
   justify-content: center;
 }
 
-.social {
+.lien-externe {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
@@ -321,11 +321,11 @@ function brillance(e: Event) {
   color: var(--accent);
 }
 
-.social:hover {
+.lien-externe:hover {
   transform: translateY(-0.1875rem);
 }
 
-.social i {
+.lien-externe i {
   font-size: 1.5rem;
 }
 
@@ -342,7 +342,7 @@ function brillance(e: Event) {
   margin-top: 0.3125rem;
 }
 
-.socials { opacity: 0; animation: apparition 0.6s ease 0.9s forwards; }
+.liens-externes { opacity: 0; animation: apparition 0.6s ease 0.9s forwards; }
 /* L'apparition est sur le wrapper : ainsi le `transform` du bouton reste
    libre pour le survol (sinon l'animation en `forwards` le fige et tue le hover). */
 .mail-chip-zone { opacity: 0; animation: apparition 0.6s ease 1.1s forwards; }
@@ -443,7 +443,7 @@ function brillance(e: Event) {
   .bio {
     margin: 0.625rem 0;
   }
-  .separateur-socials {
+  .separateur-liens {
     display: none;
   }
 }
