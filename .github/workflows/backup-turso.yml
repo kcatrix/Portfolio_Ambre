@@ -1,0 +1,81 @@
+name: Backup Turso
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Exporter la base Turso
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: |
+          mkdir -p export
+          npm install --no-save @libsql/client
+          node --input-type=module <<'NODE'
+          import { createClient } from '@libsql/client'
+          import { writeFile } from 'node:fs/promises'
+
+          const db = createClient({
+            url: process.env.TURSO_DATABASE_URL,
+            authToken: process.env.TURSO_AUTH_TOKEN,
+          })
+
+          const quoteIdentifier = (value) => `"${value.replaceAll('"', '""')}"`
+          const quoteValue = (value) => {
+            if (value === null || value === undefined) return 'NULL'
+            if (typeof value === 'number' || typeof value === 'bigint') return String(value)
+            return `'${String(value).replaceAll("'", "''")}'`
+          }
+
+          const tables = await db.execute(`
+            SELECT name, sql
+            FROM sqlite_master
+            WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
+            ORDER BY name
+          `)
+
+          const statements = ['BEGIN TRANSACTION;']
+          for (const table of tables.rows) {
+            statements.push(`${table.sql};`)
+            const result = await db.execute(`SELECT * FROM ${quoteIdentifier(table.name)}`)
+            const columns = result.columns.map(quoteIdentifier).join(', ')
+            for (const row of result.rows) {
+              const values = result.columns.map((column) => quoteValue(row[column])).join(', ')
+              statements.push(`INSERT INTO ${quoteIdentifier(table.name)} (${columns}) VALUES (${values});`)
+            }
+          }
+          statements.push('COMMIT;')
+
+          const date = new Date().toISOString().slice(0, 10)
+          await writeFile(`export/avis-${date}.sql`, `${statements.join('\n')}\n`)
+          NODE
+
+      - name: Pousser le backup dans le dépôt privé
+        env:
+          BACKUP_REPO: ${{ secrets.BACKUP_REPO }}
+          BACKUP_REPO_TOKEN: ${{ secrets.BACKUP_REPO_TOKEN }}
+        run: |
+          git init backup-repository
+          git -C backup-repository remote add origin "https://x-access-token:${BACKUP_REPO_TOKEN}@github.com/${BACKUP_REPO}.git"
+          git -C backup-repository fetch origin main || true
+          if git -C backup-repository show-ref --verify --quiet refs/remotes/origin/main; then
+            git -C backup-repository checkout -B main origin/main
+          else
+            git -C backup-repository checkout --orphan main
+          fi
+          cp export/avis-*.sql backup-repository/
+          git -C backup-repository config user.name "github-actions[bot]"
+          git -C backup-repository config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C backup-repository add avis-*.sql
+          if git -C backup-repository diff --cached --quiet; then
+            echo "Aucun changement dans la base."
+            exit 0
+          fi
+          git -C backup-repository commit -m "Backup avis $(date -u +%F)"
+          git -C backup-repository push origin main
