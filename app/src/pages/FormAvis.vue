@@ -15,8 +15,6 @@ const enCours = ref(false); // Variable de sécurité anti-spam
 const router = useRouter()
 const erreur = ref('')
 
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
 async function envoyer () {
     // 1. Si un envoi est déjà en cours, on bloque les clics supplémentaires
     if (enCours.value) return; 
@@ -30,7 +28,7 @@ async function envoyer () {
     enCours.value = true; // 2. On verrouille le bouton
 
     try {
-        const response = await fetch(`${apiUrl}/api/avis`, {
+        const response = await fetch('/api/avis', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

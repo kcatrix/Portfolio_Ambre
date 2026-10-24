@@ -13,10 +13,8 @@ interface Video {
 const videos = ref<Video[]>([])
 const montrerShorts = ref(true)
 
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
 onMounted(async () => {
-  const response = await fetch(`${apiUrl}/api/videos`)
+  const response = await fetch('/api/videos')
   videos.value = await response.json()
 })
 

@@ -2,10 +2,8 @@
 
 import { ref, onMounted, nextTick} from 'vue'
 
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
 onMounted(async () => {
-  const response = await fetch(`${apiUrl}/api/avis`)
+  const response = await fetch('/api/avis')
   avis.value = await response.json()
   await nextTick()
 

@@ -1,17 +1,19 @@
 import express from 'express'
-import { DatabaseSync } from 'node:sqlite'
+import { createClient } from '@libsql/client'
 
-const db = new DatabaseSync('avis.db')
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+})
 const CLE_API = process.env.CLE_API
 const PLAYLIST_ID = 'UUEwyFdi6rV3iOV7Pi4u58TQ';
 const app = express()
-const PORT = 3000
 
 app.get('/test', (req, res) => {
   res.json({ message: 'Le backend répond !' })
 })
 
-db.exec(`
+await db.execute(`
     CREATE TABLE IF NOT EXISTS avis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     pseudo TEXT NOT NULL,
@@ -25,9 +27,6 @@ db.exec(`
   )
 `)
 
-app.listen(PORT, () => {
-  console.log(`Backend démarré sur le port ${PORT}`)
-})
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -60,8 +59,8 @@ app.get('/api/videos', async (req, res) => {
 })
 
 app.get('/api/avis' , async (req, res) => {
-  const avis = db.prepare('SELECT * FROM avis ORDER BY id DESC').all()
-  res.json(avis)
+  const result = await db.execute('SELECT * FROM avis ORDER BY id DESC')
+  res.json(result.rows)
 })
 
 app.use(express.json()) 
@@ -89,18 +88,22 @@ app.post('/api/avis', async (req, res) => {
     console.log('YouTube KO, on enregistre sans la chaîne:', e)
   }
 
-  const stmt = db.prepare(
-    'INSERT INTO avis (pseudo, url, note, message, chaine_nom, chaine_logo, chaine_abonnes) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  )
-  const result = stmt.run(pseudo, url, note, message, nom, logo, abonnes)
+  const result = await db.execute({
+    sql: 'INSERT INTO avis (pseudo, url, note, message, chaine_nom, chaine_logo, chaine_abonnes) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    args: [pseudo, url, note, message, nom, logo, abonnes],
+  })
   res.status(201).json({ id: result.lastInsertRowid })
 })
 
-app.get('/api/avis/:pseudo', (req, res) => {
+app.get('/api/avis/:pseudo', async (req, res) => {
   if (req.query.secret !== process.env.ADMIN_SECRET) {
     return res.status(401).send('Non autorisé')
   }
-  const result = db.prepare('DELETE FROM avis WHERE pseudo = ?').run(req.params.pseudo)
-  console.log(result)
-  res.json({ supprimes: result.changes })
+  const result = await db.execute({
+    sql: 'DELETE FROM avis WHERE pseudo = ?',
+    args: [req.params.pseudo],
+  })
+  res.json({ supprimes: result.rowsAffected })
 })
+
+export default app
