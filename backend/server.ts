@@ -92,7 +92,7 @@ app.post('/api/avis', async (req, res) => {
     sql: 'INSERT INTO avis (pseudo, url, note, message, chaine_nom, chaine_logo, chaine_abonnes) VALUES (?, ?, ?, ?, ?, ?, ?)',
     args: [pseudo, url, note, message, nom, logo, abonnes],
   })
-  res.status(201).json({ id: result.lastInsertRowid })
+  res.status(201).json({ id: String(result.lastInsertRowid) })
 })
 
 app.get('/api/avis/:pseudo', async (req, res) => {
