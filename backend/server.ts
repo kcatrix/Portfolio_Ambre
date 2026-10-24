@@ -75,8 +75,15 @@ app.post('/api/avis', async (req, res) => {
   let nom = null, logo = null, abonnes = null
 
   try {
-    const handle = url.split('@')[1]
-    const reponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=@${handle}&key=${CLE_API}`)
+    const parsedUrl = new URL(url)
+    const handle = parsedUrl.pathname.match(/@([^/]+)/)?.[1]
+    if (!handle) {
+      throw new Error('Handle YouTube introuvable dans l\'URL')
+    }
+
+    const reponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=%40${encodeURIComponent(handle)}&key=${CLE_API}`
+    )
     const data = await reponse.json()
     if (data.items && data.items.length > 0) {
       const chaine = data.items[0]
