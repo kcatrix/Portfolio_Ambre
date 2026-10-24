@@ -6,7 +6,7 @@ import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 
 const pseudo = ref('');
 const url = ref('');
-const note = ref();
+const note = ref<number | null>(null);
 const message = ref('');
 const survol = ref(0);
 const send = ref(false);
@@ -14,6 +14,11 @@ const enCours = ref(false); // Variable de sécurité anti-spam
 
 const router = useRouter()
 const erreur = ref('')
+
+function choisirNote(valeur: number) {
+    note.value = valeur
+    erreur.value = ''
+}
 
 async function envoyer () {
     // 1. Si un envoi est déjà en cours, on bloque les clics supplémentaires
@@ -66,8 +71,8 @@ async function envoyer () {
         <input v-model="url" type="url" placeholder="Url de ta chaine ex:(https://www.youtube.com/@Squeezie)" required>
         <textarea v-model="message" type="text" placeholder="Ton avis sur mon travail" required></textarea>
         <div @mouseleave="survol = 0">
-            <span class="étoile" v-for="(i) in 5" :key="i" @mouseenter="survol = i" @click="note = i">
-                {{ (survol || note) >= i ? '★' : '☆' }}
+            <span class="étoile" v-for="(i) in 5" :key="i" @mouseenter="survol = i" @click="choisirNote(i)">
+                {{ (survol || note || 0) >= i ? '★' : '☆' }}
             </span>
         </div>
         <!-- 3. Désactivation du bouton pendant le chargement -->
