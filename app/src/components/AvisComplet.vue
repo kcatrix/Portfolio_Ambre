@@ -170,14 +170,15 @@ function formatAbonnes(n: string | null): string {
 }
 
 .avis-abonnes {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.8rem;
   color: var(--text-doux);
 }
 
 .avis-abonnes i {
-  display: inline-block;
-  width: 1.25rem;
-  margin-right: 0.25rem;
+  flex: 0 0 1.25rem;
   text-align: center;
 }
 
