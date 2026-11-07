@@ -174,6 +174,13 @@ function formatAbonnes(n: string | null): string {
   color: var(--text-doux);
 }
 
+.avis-abonnes i {
+  display: inline-block;
+  width: 1.25rem;
+  margin-right: 0.25rem;
+  text-align: center;
+}
+
 .yt-icon {
   margin-left: auto;  /* garde le positionnement */
   font-size: 1.3rem;     /* garde la taille */
