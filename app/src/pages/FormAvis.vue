@@ -68,7 +68,7 @@ async function envoyer () {
     <div v-if="!send" class="titre">Laisse ton avis</div>
     <form @submit.prevent="envoyer" v-if="!send" class="form">
         <input v-model="pseudo" type="text" placeholder="Le nom de ta chaîne" required>
-        <input v-model="url" type="url" placeholder="Url de ta chaine ex:(https://www.youtube.com/@Squeezie)" required>
+        <input v-model="url" type="url" placeholder="Url de ta chaine youtube ou tiktok ex:(https://www.youtube.com/@Squeezie)" required>
         <textarea v-model="message" type="text" placeholder="Ton avis sur mon travail" required></textarea>
         <div @mouseleave="survol = 0">
             <span class="étoile" v-for="(i) in 5" :key="i" @mouseenter="survol = i" @click="choisirNote(i)">
