@@ -23,10 +23,15 @@ await db.execute(`
     chaine_nom TEXT,
     chaine_logo TEXT,
     chaine_abonnes TEXT,
+    tiktok_abonnes TEXT,
     date TEXT DEFAULT CURRENT_TIMESTAMP
   )
 `)
 
+const colonnesAvis = await db.execute('PRAGMA table_info(avis)')
+if (!colonnesAvis.rows.some(colonne => colonne.name === 'tiktok_abonnes')) {
+  await db.execute('ALTER TABLE avis ADD COLUMN tiktok_abonnes TEXT')
+}
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -65,6 +70,35 @@ app.get('/api/avis' , async (req, res) => {
 
 app.use(express.json()) 
 
+function extraireHandle(url: string): string | null {
+  try {
+    const chemin = new URL(url).pathname
+    const match = chemin.match(/\/@([^/]+)/)
+    return match ? decodeURIComponent(match[1]) : null
+  } catch {
+    return null
+  }
+}
+
+async function recupererAbonnesTikTok(handle: string | null): Promise<string | null> {
+  if (!handle) return null
+
+  try {
+    const reponse = await fetch(`https://www.tiktok.com/@${encodeURIComponent(handle)}`, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: AbortSignal.timeout(5000)
+    })
+    if (!reponse.ok) return null
+
+    const page = await reponse.text()
+    const match = page.match(/"followerCount"\s*:\s*(\d+)/)
+    return match ? match[1] : null
+  } catch (e) {
+    console.log('TikTok KO, on enregistre sans le compteur:', e)
+    return null
+  }
+}
+
 app.post('/api/avis', async (req, res) => {
   const { pseudo, url, note, message } = req.body
 
@@ -73,6 +107,7 @@ app.post('/api/avis', async (req, res) => {
   }
 
   let nom = null, logo = null, abonnes = null
+  const tiktokAbonnes = await recupererAbonnesTikTok(extraireHandle(url))
 
   try {
     const parsedUrl = new URL(url)
@@ -96,8 +131,8 @@ app.post('/api/avis', async (req, res) => {
   }
 
   const result = await db.execute({
-    sql: 'INSERT INTO avis (pseudo, url, note, message, chaine_nom, chaine_logo, chaine_abonnes) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    args: [pseudo, url, note, message, nom, logo, abonnes],
+    sql: 'INSERT INTO avis (pseudo, url, note, message, chaine_nom, chaine_logo, chaine_abonnes, tiktok_abonnes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    args: [pseudo, url, note, message, nom, logo, abonnes, tiktokAbonnes],
   })
   res.status(201).json({ id: String(result.lastInsertRowid) })
 })
