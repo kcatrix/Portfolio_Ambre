@@ -150,27 +150,27 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 <AvisPreview />
       <Transition name="video" mode="out-in" appear>
         <!-- filtre actif : shorts + vidéos du tag, en sections (desktop et mobile) -->
-        <div v-if="filtreActif" class="vue-filtree" :key="'filtre-' + filtresActifs[0]">
-          <section v-if="shortsFiltres.length" class="section-filtre">
+        <div v-if="filtreActif" class="vue-filtree" :class="{ 'cote-a-cote': shortsFiltres.length && videosLongues.length }" :key="'filtre-' + filtresActifs[0]">
+          <section v-if="shortsFiltres.length" class="section-filtre col-shorts">
             <header class="entete-section">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="m10.5 9.5 4 2.5-4 2.5z"/></svg>
               <h3>Shorts</h3>
               <span class="compteur">{{ shortsFiltres.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container grille-shorts">
+            <div class="video-container grille-shorts zone-scroll">
               <VideoCard v-for="v in shortsFiltres" :key="v.IdVideo" :video="v" />
             </div>
           </section>
 
-          <section v-if="videosLongues.length" class="section-filtre">
+          <section v-if="videosLongues.length" class="section-filtre col-videos">
             <header class="entete-section">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/></svg>
               <h3>Vidéos</h3>
               <span class="compteur">{{ videosLongues.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container">
+            <div class="video-container zone-scroll">
               <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
             </div>
           </section>
@@ -481,6 +481,53 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   height: 1px;
   background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.5), transparent);
 }
+/* --- Filtre avec shorts ET vidéos : deux colonnes scrollables --- */
+.vue-filtree.cote-a-cote {
+  display: grid;
+  grid-template-columns: 2fr 1.54fr;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+.cote-a-cote .section-filtre { margin-top: 0; min-width: 0; }
+.cote-a-cote .entete-section { margin-bottom: 0.5rem; }
+
+/* La colonne shorts fixe la hauteur : exactement une rangée de shorts visible */
+.cote-a-cote .col-shorts { container-type: inline-size; }
+.cote-a-cote .col-shorts .zone-scroll {
+  grid-template-columns: repeat(2, 1fr);
+  height: calc((100cqw - 1.25rem - 1.25rem) / 2 * 16 / 9 + 1.25rem);
+}
+
+/* La colonne vidéos s'aligne sur cette hauteur sans l'agrandir */
+.cote-a-cote .col-videos { position: relative; }
+.cote-a-cote .col-videos .zone-scroll {
+  position: absolute;
+  inset: 2.25rem 0 0 0;
+  grid-template-columns: 1fr;
+  align-content: start;
+}
+
+.cote-a-cote .zone-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.6) transparent;
+  border-radius: 0.75rem;
+}
+.cote-a-cote .zone-scroll :deep(.video-card) { scroll-snap-align: start; scroll-margin-top: 0.625rem; }
+
+@media (max-width: 56.25rem) {
+  .vue-filtree.cote-a-cote { display: block; }
+  .cote-a-cote .section-filtre { margin-top: 1.25rem; }
+  .cote-a-cote .col-shorts .zone-scroll,
+  .cote-a-cote .col-videos .zone-scroll {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+}
+
 .vide-filtre {
   text-align: center;
   color: var(--text-doux);
