@@ -40,6 +40,22 @@ function vraieChaine(info: Avis): boolean {
   return !!info.chaine_logo && info.chaine_nom !== 'Undefined'
 }
 
+// Logo du réseau selon le lien laissé dans l'avis
+const reseaux = [
+  { domaines: ['youtube.com', 'youtu.be'], icone: 'fa-brands fa-youtube', couleur: '#ff0000', nom: 'YouTube' },
+  { domaines: ['tiktok.com'], icone: 'fa-brands fa-tiktok', couleur: '#000000', nom: 'TikTok' },
+  { domaines: ['x.com', 'twitter.com'], icone: 'fa-brands fa-x-twitter', couleur: 'var(--text-fort)', nom: 'X' },
+  { domaines: ['instagram.com'], icone: 'fa-brands fa-instagram', couleur: '#e1306c', nom: 'Instagram' },
+  { domaines: ['twitch.tv'], icone: 'fa-brands fa-twitch', couleur: '#9146ff', nom: 'Twitch' },
+]
+
+function reseau(url: string) {
+  let hote = ''
+  try { hote = new URL(url).hostname.toLowerCase() } catch { hote = url.toLowerCase() }
+  const trouve = reseaux.find(r => r.domaines.some(d => hote === d || hote.endsWith('.' + d)))
+  return trouve ?? { icone: 'fa-solid fa-link', couleur: 'var(--accent)', nom: 'Lien' }
+}
+
 function formatAbonnes(n: string | null): string {
   if (!n) return ''
   const num = Number(n)
@@ -73,9 +89,11 @@ function formatAbonnes(n: string | null): string {
         <i class="fa-brands fa-tiktok" aria-hidden="true"></i> {{ formatAbonnes(info.tiktok_abonnes) }} abonnés
       </span>
 		</div>
-		<i class="fa-brands yt-icon"
-    :class="info.url.includes('tiktok') ? 'fa-tiktok' : 'fa-youtube'"
-    :style="{ color: info.url.includes('tiktok') ? '#000000' : '#ff0000' }"></i>
+		<i class="yt-icon"
+    :class="reseau(info.url).icone"
+    :style="{ color: reseau(info.url).couleur }"
+    :title="reseau(info.url).nom"
+    aria-hidden="true"></i>
 		</div>
 
 		<span class="avis-etoiles">{{ '★'.repeat(info.note) }}{{ '☆'.repeat(5 - info.note) }}</span>
