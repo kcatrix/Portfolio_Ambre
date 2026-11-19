@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref, onMounted, nextTick} from 'vue'
+import { ref, reactive, onMounted, nextTick} from 'vue'
 
 onMounted(async () => {
   const response = await fetch('/api/avis')
@@ -42,18 +42,47 @@ function vraieChaine(info: Avis): boolean {
 
 // Logo du réseau selon le lien laissé dans l'avis
 const reseaux = [
-  { domaines: ['youtube.com', 'youtu.be'], icone: 'fa-brands fa-youtube', couleur: '#ff0000', nom: 'YouTube' },
-  { domaines: ['tiktok.com'], icone: 'fa-brands fa-tiktok', couleur: '#000000', nom: 'TikTok' },
-  { domaines: ['x.com', 'twitter.com'], icone: 'fa-brands fa-x-twitter', couleur: 'var(--text-fort)', nom: 'X' },
-  { domaines: ['instagram.com'], icone: 'fa-brands fa-instagram', couleur: '#e1306c', nom: 'Instagram' },
-  { domaines: ['twitch.tv'], icone: 'fa-brands fa-twitch', couleur: '#9146ff', nom: 'Twitch' },
+  { domaines: ['youtube.com', 'youtu.be'], icone: 'fa-brands fa-youtube', couleur: '#ff0000', nom: 'YouTube', unavatar: 'youtube' },
+  { domaines: ['tiktok.com'], icone: 'fa-brands fa-tiktok', couleur: '#000000', nom: 'TikTok', unavatar: 'tiktok' },
+  { domaines: ['x.com', 'twitter.com'], icone: 'fa-brands fa-x-twitter', couleur: 'var(--text-fort)', nom: 'X', unavatar: 'x' },
+  { domaines: ['instagram.com'], icone: 'fa-brands fa-instagram', couleur: '#e1306c', nom: 'Instagram', unavatar: 'instagram' },
+  { domaines: ['twitch.tv'], icone: 'fa-brands fa-twitch', couleur: '#9146ff', nom: 'Twitch', unavatar: 'twitch' },
 ]
 
 function reseau(url: string) {
   let hote = ''
   try { hote = new URL(url).hostname.toLowerCase() } catch { hote = url.toLowerCase() }
   const trouve = reseaux.find(r => r.domaines.some(d => hote === d || hote.endsWith('.' + d)))
-  return trouve ?? { icone: 'fa-solid fa-link', couleur: 'var(--accent)', nom: 'Lien' }
+  return trouve ?? { icone: 'fa-solid fa-link', couleur: 'var(--accent)', nom: 'Lien', unavatar: null }
+}
+
+// Photo : logo de la chaîne YouTube si on l'a, sinon la photo du compte du lien (via unavatar.io)
+const photosKO = reactive(new Set<number>())
+
+function pseudoDuLien(url: string): string | null {
+  try {
+    const segment = new URL(url).pathname.split('/').filter(Boolean)[0]
+    if (!segment) return null
+    const pseudo = decodeURIComponent(segment).replace(/^@/, '')
+    return /^[\w.-]+$/.test(pseudo) ? pseudo : null
+  } catch {
+    return null
+  }
+}
+
+function photoAvis(info: Avis): string | null {
+  if (vraieChaine(info)) return info.chaine_logo
+  if (photosKO.has(info.id)) return null
+  const service = reseau(info.url).unavatar
+  // YouTube : seulement les liens /@pseudo (pas /watch, /channel…)
+  if (service === 'youtube' && !/\/@/.test(info.url)) return null
+  const pseudo = pseudoDuLien(info.url)
+  return service && pseudo ? `https://unavatar.io/${service}/${encodeURIComponent(pseudo)}?fallback=false` : null
+}
+
+function photoEnErreur(info: Avis) {
+  if (vraieChaine(info)) info.chaine_logo = null
+  else photosKO.add(info.id)
 }
 
 function formatAbonnes(n: string | null): string {
@@ -77,8 +106,8 @@ function formatAbonnes(n: string | null): string {
 
 		<!-- en-tête : la chaîne -->
 		<div class="card-entete">
-		<img v-if="vraieChaine(info)" :src="info.chaine_logo!" :alt="info.pseudo" class="avis-logo"
-			referrerpolicy="no-referrer" @error="info.chaine_logo = null">
+		<img v-if="photoAvis(info)" :src="photoAvis(info)!" :alt="info.pseudo" class="avis-logo"
+			referrerpolicy="no-referrer" loading="lazy" @error="photoEnErreur(info)">
 		<div v-else class="avis-logo avatar-vide">{{ info.pseudo.charAt(0).toUpperCase() }}</div>
       <div class="card-ident">
 			<span class="avis-nom">{{ info.pseudo }}</span>
