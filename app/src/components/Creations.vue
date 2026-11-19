@@ -87,6 +87,8 @@ const Videofiltrer = computed(() =>
   videosApresTags.value.filter(video => montrerShorts.value ? video.short : !video.short)
 )
 
+const filtreActif = computed(() => filtresActifs.value.length > 0)
+
 const shortsFiltres = computed(() => videosApresTags.value.filter(v => v.short))
 const moitie = computed(() => {
   const total = shortsFiltres.value.length
@@ -111,11 +113,17 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
     <div>
       <hr class="separateur separateur-haut">
       <div class="barre-filtres">
-        <div class="segment" :class="{ 'sur-videos': !montrerShorts }">
-          <div class="indicateur"></div>
-          <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
-          <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
-        </div>
+        <Transition name="bascule" mode="out-in">
+          <div v-if="!filtreActif" key="segment" class="segment" :class="{ 'sur-videos': !montrerShorts }">
+            <div class="indicateur"></div>
+            <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
+            <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
+          </div>
+          <div v-else key="resume" class="resume-filtre">
+            <span class="resume-tag">#{{ filtresActifs[0] }}</span>
+            <span class="resume-compte">{{ videosApresTags.length }} création{{ videosApresTags.length > 1 ? 's' : '' }}</span>
+          </div>
+        </Transition>
 
         <button class="btn-filtre" :class="{ 'btn-rouge': filtresActifs.length > 0 }" @click="gererClicFiltre">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -141,15 +149,46 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
       </div>
 <AvisPreview />
       <Transition name="video" mode="out-in" appear>
+        <!-- filtre actif : shorts + vidéos du tag, en sections (desktop et mobile) -->
+        <div v-if="filtreActif" class="vue-filtree" :key="'filtre-' + filtresActifs[0]">
+          <section v-if="shortsFiltres.length" class="section-filtre">
+            <header class="entete-section">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="m10.5 9.5 4 2.5-4 2.5z"/></svg>
+              <h3>Shorts</h3>
+              <span class="compteur">{{ shortsFiltres.length }}</span>
+              <span class="trait"></span>
+            </header>
+            <div class="video-container grille-shorts">
+              <VideoCard v-for="v in shortsFiltres" :key="v.IdVideo" :video="v" />
+            </div>
+          </section>
+
+          <section v-if="videosLongues.length" class="section-filtre">
+            <header class="entete-section">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/></svg>
+              <h3>Vidéos</h3>
+              <span class="compteur">{{ videosLongues.length }}</span>
+              <span class="trait"></span>
+            </header>
+            <div class="video-container">
+              <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
+            </div>
+          </section>
+
+          <p v-if="!videosApresTags.length" class="vide-filtre">
+            Aucune création pour ce filtre pour le moment.
+          </p>
+        </div>
+
         <!-- version desktop : grille normale -->
-        <div class="version-desktop" :key="String(montrerShorts)">
+        <div v-else class="version-desktop" :key="String(montrerShorts)">
           <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
             <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
           </div>
         </div>
       </Transition>
 
-        <div class="version-mobile">
+        <div class="version-mobile" v-if="!filtreActif">
         <template v-if="montrerShorts">
           <div class="double-carrousel">
           <div class="ligne-shorts">
@@ -383,6 +422,70 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   scroll-snap-align: start;
 }
 
+
+/* --- Vue filtrée : résumé à la place du sélecteur Shorts/Vidéos --- */
+.resume-filtre {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  height: 2.875rem;
+  padding: 0 0.375rem 0 0.375rem;
+  background: var(--surface);
+  border-radius: 62.4375rem;
+}
+.resume-tag {
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 62.4375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.resume-compte {
+  padding-right: 0.875rem;
+  color: var(--text-doux);
+  font-size: 0.875rem;
+}
+
+.bascule-enter-active, .bascule-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.bascule-enter-from, .bascule-leave-to { opacity: 0; transform: scale(0.94); }
+
+.section-filtre {
+  margin-top: 1.25rem;
+}
+.entete-section {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0 0.625rem;
+  color: var(--accent);
+}
+.entete-section h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--text-fort);
+}
+.compteur {
+  min-width: 1.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 62.4375rem;
+  background: rgba(var(--accent-rgb), 0.15);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+.trait {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.5), transparent);
+}
+.vide-filtre {
+  text-align: center;
+  color: var(--text-doux);
+  padding: 2rem 0;
+}
 
 .video-enter-active, .video-leave-active { transition: all 0.5s ease; }
 .video-enter-from, .video-leave-to { opacity: 0; filter: blur(0.75rem); }
