@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, computed } from 'vue'
 import VideoCard from './VideoCard.vue'
 import AvisPreview from './AvisPreview.vue'
 import AvisComplet from './AvisComplet.vue'
@@ -11,7 +11,7 @@ interface Video {
 }
 
 const videos = ref<Video[]>([])
-const montrerShorts = ref(true)
+const montrerShorts = ref(false)
 
 onMounted(async () => {
   const response = await fetch('/api/videos')
@@ -103,6 +103,37 @@ const videoLigne1 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 const videoLigne2 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 1))
 const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 2))
 
+// --- Indice de scroll des colonnes (vue filtrée côte à côte) ---
+type Zone = 'shorts' | 'videos'
+const zones: Record<Zone, HTMLElement | null> = { shorts: null, videos: null }
+const resteEnBas = reactive<Record<Zone, boolean>>({ shorts: false, videos: false })
+
+const majZone = (cle: Zone) => {
+  const el = zones[cle]
+  if (!el || getComputedStyle(el).overflowY === 'visible') { resteEnBas[cle] = false; return }
+  resteEnBas[cle] = el.scrollTop + el.clientHeight < el.scrollHeight - 8
+}
+
+const observateur = typeof ResizeObserver !== 'undefined'
+  ? new ResizeObserver(() => { majZone('shorts'); majZone('videos') })
+  : null
+
+const lierZone = (cle: Zone) => (el: unknown) => {
+  const node = el as HTMLElement | null
+  if (zones[cle] === node) return
+  if (zones[cle]) observateur?.unobserve(zones[cle]!)
+  zones[cle] = node
+  if (node) { observateur?.observe(node); node.firstElementChild && observateur?.observe(node.firstElementChild) }
+  majZone(cle)
+}
+
+const defiler = (cle: Zone) => {
+  const el = zones[cle]
+  if (el) el.scrollBy({ top: el.clientHeight * 0.85, behavior: 'smooth' })
+}
+
+onBeforeUnmount(() => observateur?.disconnect())
+
 </script>
 
 <template>
@@ -114,10 +145,10 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
       <hr class="separateur separateur-haut">
       <div class="barre-filtres">
         <Transition name="bascule" mode="out-in">
-          <div v-if="!filtreActif" key="segment" class="segment" :class="{ 'sur-videos': !montrerShorts }">
+          <div v-if="!filtreActif" key="segment" class="segment" :class="{ 'sur-shorts': montrerShorts }">
             <div class="indicateur"></div>
-            <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
             <button class="opt" :class="{ actif: !montrerShorts }" @click="montrerShorts = false">Vidéos</button>
+            <button class="opt" :class="{ actif: montrerShorts }" @click="montrerShorts = true">Shorts</button>
           </div>
           <div v-else key="resume" class="resume-filtre">
             <span class="resume-tag">#{{ filtresActifs[0] }}</span>
@@ -151,6 +182,20 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
       <Transition name="video" mode="out-in" appear>
         <!-- filtre actif : shorts + vidéos du tag, en sections (desktop et mobile) -->
         <div v-if="filtreActif" class="vue-filtree" :class="{ 'cote-a-cote': shortsFiltres.length && videosLongues.length }" :key="'filtre-' + filtresActifs[0]">
+          <!-- entête unique (desktop, shorts + vidéos) -->
+          <header v-if="shortsFiltres.length && videosLongues.length" class="entete-unique">
+            <span class="entete-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="m10.5 9.5 4 2.5-4 2.5z"/></svg>
+              <h3>Shorts</h3>
+              <span class="compteur">{{ shortsFiltres.length }}</span>
+            </span>
+            <span class="trait trait-double"></span>
+            <span class="entete-label">
+              <span class="compteur">{{ videosLongues.length }}</span>
+              <h3>Vidéos</h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/></svg>
+            </span>
+          </header>
           <section v-if="shortsFiltres.length" class="section-filtre col-shorts">
             <header class="entete-section">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="m10.5 9.5 4 2.5-4 2.5z"/></svg>
@@ -158,9 +203,15 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
               <span class="compteur">{{ shortsFiltres.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container grille-shorts zone-scroll">
+            <div class="video-container grille-shorts zone-scroll" :class="{ 'a-suivre': resteEnBas.shorts }" :ref="lierZone('shorts')" @scroll.passive="majZone('shorts')">
               <VideoCard v-for="v in shortsFiltres" :key="v.IdVideo" :video="v" />
             </div>
+            <Transition name="indice">
+              <button v-if="resteEnBas.shorts" class="indice-scroll" @click="defiler('shorts')">
+                Plus de shorts
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </Transition>
           </section>
 
           <section v-if="videosLongues.length" class="section-filtre col-videos">
@@ -170,9 +221,15 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
               <span class="compteur">{{ videosLongues.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container zone-scroll">
+            <div class="video-container zone-scroll" :class="{ 'a-suivre': resteEnBas.videos }" :ref="lierZone('videos')" @scroll.passive="majZone('videos')">
               <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
             </div>
+            <Transition name="indice">
+              <button v-if="resteEnBas.videos" class="indice-scroll" @click="defiler('videos')">
+                Plus de vidéos
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </Transition>
           </section>
 
           <p v-if="!videosApresTags.length" class="vide-filtre">
@@ -302,7 +359,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   transition: transform 0.28s cubic-bezier(.4, 0, .2, 1);
 }
 
-.segment.sur-videos .indicateur {
+.segment.sur-shorts .indicateur {
   transform: translateX(5.625rem);
 }
 
@@ -488,8 +545,60 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   gap: 1.5rem;
   margin-top: 1.25rem;
 }
-.cote-a-cote .section-filtre { margin-top: 0; min-width: 0; }
-.cote-a-cote .entete-section { margin-bottom: 0.5rem; }
+.cote-a-cote .section-filtre { margin-top: 0; min-width: 0; position: relative; }
+.cote-a-cote .entete-section { display: none; }
+.indice-scroll { display: none; }
+
+/* Entête unique : Shorts ——————— Vidéos */
+.entete-unique {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0 0.625rem;
+  margin-bottom: -0.75rem;
+  color: var(--accent);
+}
+.entete-unique h3 { margin: 0; font-size: 1.125rem; color: var(--text-fort); }
+.entete-label { display: inline-flex; align-items: center; gap: 0.625rem; }
+.trait-double {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.5), rgba(var(--accent-rgb), 0.15) 50%, rgba(var(--accent-rgb), 0.5));
+}
+
+/* Indice de scroll : fondu en bas + bouton qui rebondit */
+.cote-a-cote .zone-scroll.a-suivre {
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+.cote-a-cote .indice-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 0.75rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 62.4375rem;
+  background: rgba(var(--accent-rgb), 0.9);
+  color: var(--on-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  transform: translateX(-50%);
+  animation: rebond 1.8s ease-in-out infinite;
+}
+.cote-a-cote .indice-scroll:hover { background: var(--accent); }
+@keyframes rebond {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 0.3rem); }
+}
+.indice-enter-active, .indice-leave-active { transition: opacity 0.25s ease; }
+.cote-a-cote .indice-scroll.indice-leave-active { animation: none; }
+.indice-enter-from, .indice-leave-to { opacity: 0; }
 
 /* La colonne shorts fixe la hauteur : exactement une rangée de shorts visible */
 .cote-a-cote .col-shorts { container-type: inline-size; }
@@ -502,7 +611,7 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 .cote-a-cote .col-videos { position: relative; }
 .cote-a-cote .col-videos .zone-scroll {
   position: absolute;
-  inset: 2.25rem 0 0 0;
+  inset: 0;
   grid-template-columns: 1fr;
   align-content: start;
 }
@@ -512,13 +621,16 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
   overscroll-behavior: contain;
   scroll-snap-type: y mandatory;
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--accent-rgb), 0.6) transparent;
+  scrollbar-color: var(--accent) rgba(var(--accent-rgb), 0.12);
   border-radius: 0.75rem;
 }
 .cote-a-cote .zone-scroll :deep(.video-card) { scroll-snap-align: start; scroll-margin-top: 0.625rem; }
 
 @media (max-width: 56.25rem) {
   .vue-filtree.cote-a-cote { display: block; }
+  .entete-unique, .cote-a-cote .indice-scroll { display: none; }
+  .cote-a-cote .entete-section { display: flex; }
+  .cote-a-cote .zone-scroll.a-suivre { -webkit-mask-image: none; mask-image: none; }
   .cote-a-cote .section-filtre { margin-top: 1.25rem; }
   .cote-a-cote .col-shorts .zone-scroll,
   .cote-a-cote .col-videos .zone-scroll {
