@@ -203,7 +203,7 @@ onBeforeUnmount(() => observateur?.disconnect())
               <span class="compteur">{{ shortsFiltres.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container grille-shorts zone-scroll" :class="{ 'a-suivre': resteEnBas.shorts }" :ref="lierZone('shorts')" @scroll.passive="majZone('shorts')">
+            <div class="video-container grille-shorts zone-scroll" :class="{ 'a-suivre': resteEnBas.shorts, fixe: shortsFiltres.length <= 2 }" :ref="lierZone('shorts')" @scroll.passive="majZone('shorts')">
               <VideoCard v-for="v in shortsFiltres" :key="v.IdVideo" :video="v" />
             </div>
             <Transition name="indice">
@@ -221,7 +221,7 @@ onBeforeUnmount(() => observateur?.disconnect())
               <span class="compteur">{{ videosLongues.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container zone-scroll" :class="{ 'a-suivre': resteEnBas.videos }" :ref="lierZone('videos')" @scroll.passive="majZone('videos')">
+            <div class="video-container zone-scroll" :class="{ 'a-suivre': resteEnBas.videos, fixe: videosLongues.length <= 2 }" :ref="lierZone('videos')" @scroll.passive="majZone('videos')">
               <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
             </div>
             <Transition name="indice">
@@ -624,6 +624,10 @@ onBeforeUnmount(() => observateur?.disconnect())
   scrollbar-color: var(--accent) rgba(var(--accent-rgb), 0.12);
   border-radius: 0.75rem;
 }
+/* Rien à faire défiler : pas de scroll, le zoom au survol peut déborder */
+.cote-a-cote .zone-scroll.fixe { overflow: visible; }
+/* Zoom réduit dans les colonnes scrollables : il reste dans la marge interne */
+.cote-a-cote .zone-scroll:not(.fixe) :deep(.video-card:hover) { transform: scale(1.03); }
 .cote-a-cote .zone-scroll :deep(.video-card) { scroll-snap-align: start; scroll-margin-top: 0.625rem; }
 
 @media (max-width: 56.25rem) {
