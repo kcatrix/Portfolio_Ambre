@@ -132,6 +132,30 @@ const defiler = (cle: Zone) => {
   if (el) el.scrollBy({ top: el.clientHeight * 0.85, behavior: 'smooth' })
 }
 
+// Molette : quand la colonne est en butée, on passe directement le scroll à la page
+// (sinon le navigateur reste "accroché" à la colonne jusqu'à ce que la souris bouge)
+const parentScrollable = (el: HTMLElement): HTMLElement => {
+  let p = el.parentElement
+  while (p) {
+    const oy = getComputedStyle(p).overflowY
+    if ((oy === 'auto' || oy === 'scroll') && p.scrollHeight > p.clientHeight) return p
+    p = p.parentElement
+  }
+  return (document.scrollingElement as HTMLElement) || document.documentElement
+}
+
+const gererMolette = (cle: Zone, e: WheelEvent) => {
+  const el = zones[cle]
+  if (!el || e.ctrlKey || getComputedStyle(el).overflowY === 'visible') return
+  const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * el.clientHeight : e.deltaY
+  const enBas = el.scrollTop + el.clientHeight >= el.scrollHeight - 2
+  const enHaut = el.scrollTop <= 1
+  if ((delta > 0 && enBas) || (delta < 0 && enHaut)) {
+    e.preventDefault()
+    parentScrollable(el).scrollBy({ top: delta, behavior: 'instant' as ScrollBehavior })
+  }
+}
+
 onBeforeUnmount(() => observateur?.disconnect())
 
 </script>
@@ -203,7 +227,7 @@ onBeforeUnmount(() => observateur?.disconnect())
               <span class="compteur">{{ shortsFiltres.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container grille-shorts zone-scroll" :class="{ 'a-suivre': resteEnBas.shorts, fixe: shortsFiltres.length <= 2 }" :ref="lierZone('shorts')" @scroll.passive="majZone('shorts')">
+            <div class="video-container grille-shorts zone-scroll" :class="{ 'a-suivre': resteEnBas.shorts, fixe: shortsFiltres.length <= 2 }" :ref="lierZone('shorts')" @scroll.passive="majZone('shorts')" @wheel="gererMolette('shorts', $event)">
               <VideoCard v-for="v in shortsFiltres" :key="v.IdVideo" :video="v" />
             </div>
             <Transition name="indice">
@@ -221,7 +245,7 @@ onBeforeUnmount(() => observateur?.disconnect())
               <span class="compteur">{{ videosLongues.length }}</span>
               <span class="trait"></span>
             </header>
-            <div class="video-container zone-scroll" :class="{ 'a-suivre': resteEnBas.videos, fixe: videosLongues.length <= 2 }" :ref="lierZone('videos')" @scroll.passive="majZone('videos')">
+            <div class="video-container zone-scroll" :class="{ 'a-suivre': resteEnBas.videos, fixe: videosLongues.length <= 2 }" :ref="lierZone('videos')" @scroll.passive="majZone('videos')" @wheel="gererMolette('videos', $event)">
               <VideoCard v-for="v in videosLongues" :key="v.IdVideo" :video="v" />
             </div>
             <Transition name="indice">
@@ -618,7 +642,7 @@ onBeforeUnmount(() => observateur?.disconnect())
 
 .cote-a-cote .zone-scroll {
   overflow-y: auto;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) rgba(var(--accent-rgb), 0.12);
   border-radius: 0.75rem;
