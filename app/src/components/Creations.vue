@@ -618,7 +618,6 @@ onBeforeUnmount(() => observateur?.disconnect())
 
 .cote-a-cote .zone-scroll {
   overflow-y: auto;
-  overscroll-behavior: contain;
   scroll-snap-type: y mandatory;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) rgba(var(--accent-rgb), 0.12);
