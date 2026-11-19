@@ -152,11 +152,58 @@ const gererMolette = (cle: Zone, e: WheelEvent) => {
   const enHaut = el.scrollTop <= 1
   if ((delta > 0 && enBas) || (delta < 0 && enHaut)) {
     e.preventDefault()
-    parentScrollable(el).scrollBy({ top: delta, behavior: 'instant' as ScrollBehavior })
+    defilerPage(parentScrollable(el), delta, estTrackpad(e))
   }
 }
 
-onBeforeUnmount(() => observateur?.disconnect())
+// Trackpad : beaucoup de petits deltas en pixels, déjà fluides -> on suit directement.
+// Molette : gros crans -> on anime pour imiter le scroll natif.
+const estTrackpad = (e: WheelEvent) =>
+  e.deltaMode === 0 && (Math.abs(e.deltaY) < 50 || !Number.isInteger(e.deltaY))
+
+let pageCible: HTMLElement | null = null
+let pageDestination = 0
+let pageDernier = 0
+let pageAnim = 0
+
+const defilerPage = (el: HTMLElement, delta: number, direct: boolean) => {
+  const max = el.scrollHeight - el.clientHeight
+  // Repart de la position réelle si rien n'anime ou si la page a été scrollée ailleurs entre-temps
+  if (!pageAnim || pageCible !== el || Math.abs(el.scrollTop - pageDernier) > 2) {
+    cancelAnimationFrame(pageAnim)
+    pageAnim = 0
+    pageCible = el
+    pageDestination = el.scrollTop
+  }
+  pageDestination = Math.max(0, Math.min(max, pageDestination + delta))
+  if (direct && !pageAnim) {
+    el.scrollTop = pageDestination
+    return
+  }
+  if (!pageAnim) {
+    pageDernier = el.scrollTop
+    pageAnim = requestAnimationFrame(etapePage)
+  }
+}
+
+const etapePage = () => {
+  const el = pageCible
+  // La page a été scrollée par autre chose (souris sortie de la colonne, barre de scroll…) : on lâche
+  if (!el || Math.abs(el.scrollTop - pageDernier) > 2) { pageAnim = 0; return }
+  const reste = pageDestination - el.scrollTop
+  if (Math.abs(reste) < 1) {
+    el.scrollTop = pageDestination
+    pageAnim = 0
+    return
+  }
+  let pas = reste * 0.22
+  if (Math.abs(pas) < 1) pas = Math.sign(reste)
+  el.scrollTop += pas
+  pageDernier = el.scrollTop
+  pageAnim = requestAnimationFrame(etapePage)
+}
+
+onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim) })
 
 </script>
 
@@ -642,7 +689,6 @@ onBeforeUnmount(() => observateur?.disconnect())
 
 .cote-a-cote .zone-scroll {
   overflow-y: auto;
-  scroll-snap-type: y proximity;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) rgba(var(--accent-rgb), 0.12);
   border-radius: 0.75rem;
@@ -651,7 +697,6 @@ onBeforeUnmount(() => observateur?.disconnect())
 .cote-a-cote .zone-scroll.fixe { overflow: visible; }
 /* Zoom réduit dans les colonnes scrollables : il reste dans la marge interne */
 .cote-a-cote .zone-scroll:not(.fixe) :deep(.video-card:hover) { transform: scale(1.03); }
-.cote-a-cote .zone-scroll :deep(.video-card) { scroll-snap-align: start; scroll-margin-top: 0.625rem; }
 
 @media (max-width: 56.25rem) {
   .vue-filtree.cote-a-cote { display: block; }
