@@ -103,18 +103,22 @@ const videoLigne1 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 const videoLigne2 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 1))
 const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 === 2))
 
-// Vue par défaut (PC) : nombre de créations visibles avant l'étiquette « Plus de … ».
-// Doit rester cohérent avec la hauteur de .version-desktop .zone-scroll (3 rangées de vidéos, 2 de shorts).
+// Vue par défaut (PC) : nombre de créations affichées avant le bouton « Plus de … »,
+// qui fait apparaître les autres dans la grille (pas de scroll interne).
 const LIMITE_VIDEOS = 6
 const LIMITE_SHORTS = 8
-const grilleFixe = computed(() =>
-  Videofiltrer.value.length <= (montrerShorts.value ? LIMITE_SHORTS : LIMITE_VIDEOS)
-)
+const grilleDepliee = reactive({ videos: false, shorts: false })
+const videosGrille = computed(() => {
+  const depliee = montrerShorts.value ? grilleDepliee.shorts : grilleDepliee.videos
+  return depliee ? Videofiltrer.value : Videofiltrer.value.slice(0, montrerShorts.value ? LIMITE_SHORTS : LIMITE_VIDEOS)
+})
+const resteGrille = computed(() => Videofiltrer.value.length - videosGrille.value.length)
+const deplierGrille = () => { grilleDepliee[montrerShorts.value ? 'shorts' : 'videos'] = true }
 
-// --- Indice de scroll des zones bornées (vue filtrée côte à côte + grille PC) ---
-type Zone = 'shorts' | 'videos' | 'grille'
-const zones: Record<Zone, HTMLElement | null> = { shorts: null, videos: null, grille: null }
-const resteEnBas = reactive<Record<Zone, boolean>>({ shorts: false, videos: false, grille: false })
+// --- Indice de scroll des colonnes (vue filtrée côte à côte) ---
+type Zone = 'shorts' | 'videos'
+const zones: Record<Zone, HTMLElement | null> = { shorts: null, videos: null }
+const resteEnBas = reactive<Record<Zone, boolean>>({ shorts: false, videos: false })
 
 const majZone = (cle: Zone) => {
   const el = zones[cle]
@@ -123,7 +127,7 @@ const majZone = (cle: Zone) => {
 }
 
 const observateur = typeof ResizeObserver !== 'undefined'
-  ? new ResizeObserver(() => { majZone('shorts'); majZone('videos'); majZone('grille') })
+  ? new ResizeObserver(() => { majZone('shorts'); majZone('videos') })
   : null
 
 const lierZone = (cle: Zone) => (el: unknown) => {
@@ -316,17 +320,15 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
           </p>
         </div>
 
-        <!-- version desktop : grille limitée (6 vidéos / 8 shorts), le reste défile -->
+        <!-- version desktop : 6 vidéos / 8 shorts, le bouton fait apparaître les autres -->
         <div v-else class="version-desktop" :key="String(montrerShorts)">
-          <div class="video-container zone-scroll" :class="{ 'grille-shorts': montrerShorts, 'a-suivre': resteEnBas.grille, fixe: grilleFixe }" :ref="lierZone('grille')" @scroll.passive="majZone('grille')" @wheel="gererMolette('grille', $event)">
-            <VideoCard v-for="v in Videofiltrer" :key="v.IdVideo" :video="v" />
+          <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
+            <VideoCard v-for="v in videosGrille" :key="v.IdVideo" :video="v" />
           </div>
-          <Transition name="indice">
-            <button v-if="resteEnBas.grille" class="indice-scroll" @click="defiler('grille')">
-              {{ montrerShorts ? 'Plus de shorts' : 'Plus de vidéos' }}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-          </Transition>
+          <button v-if="resteGrille > 0" class="btn-plus" @click="deplierGrille">
+            {{ montrerShorts ? 'Plus de shorts' : 'Plus de vidéos' }}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
         </div>
       </Transition>
 
@@ -655,11 +657,9 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
 }
-:is(.cote-a-cote, .version-desktop) .indice-scroll {
-  position: absolute;
-  left: 50%;
-  bottom: 0.75rem;
-  z-index: 2;
+/* Étiquette « Plus de … » : même look pour l'indice du filtre et le bouton de la grille PC */
+.cote-a-cote .indice-scroll,
+.btn-plus {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
@@ -673,16 +673,25 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   cursor: pointer;
   box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
+}
+.cote-a-cote .indice-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 0.75rem;
+  z-index: 2;
   transform: translateX(-50%);
   animation: rebond 1.8s ease-in-out infinite;
 }
-:is(.cote-a-cote, .version-desktop) .indice-scroll:hover { background: var(--accent); }
+.cote-a-cote .indice-scroll:hover,
+.btn-plus:hover { background: var(--accent); }
+/* Bouton sous la grille PC, centré : au clic, les autres créations apparaissent */
+.btn-plus { display: flex; margin: 0.75rem auto 0; }
 @keyframes rebond {
   0%, 100% { transform: translate(-50%, 0); }
   50% { transform: translate(-50%, 0.3rem); }
 }
 .indice-enter-active, .indice-leave-active { transition: opacity 0.25s ease; }
-:is(.cote-a-cote, .version-desktop) .indice-scroll.indice-leave-active { animation: none; }
+.cote-a-cote .indice-scroll.indice-leave-active { animation: none; }
 .indice-enter-from, .indice-leave-to { opacity: 0; }
 
 /* La colonne shorts fixe la hauteur : exactement une rangée de shorts visible */
@@ -701,37 +710,16 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   align-content: start;
 }
 
-:is(.cote-a-cote, .version-desktop) .zone-scroll {
+.cote-a-cote .zone-scroll {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) rgba(var(--accent-rgb), 0.12);
   border-radius: 0.75rem;
 }
 /* Rien à faire défiler : pas de scroll, le zoom au survol peut déborder */
-:is(.cote-a-cote, .version-desktop) .zone-scroll.fixe { overflow: visible; }
+.cote-a-cote .zone-scroll.fixe { overflow: visible; }
 /* Zoom réduit dans les colonnes scrollables : il reste dans la marge interne */
-:is(.cote-a-cote, .version-desktop) .zone-scroll:not(.fixe) :deep(.video-card:hover) { transform: scale(1.03); }
-
-/* --- Grille PC par défaut : 3 rangées de vidéos (6) ou 2 rangées de shorts (8), le reste défile --- */
-.version-desktop {
-  position: relative;
-  container-type: inline-size;
-}
-.version-desktop .zone-scroll:not(.fixe) {
-  /* 2 colonnes 16/9 : (largeur - marges 1.25rem - 1 gouttière) / 2, x3 rangées + 3 gouttières */
-  height: calc((100cqw - 2.5rem) / 2 * 9 / 16 * 3 + 3.75rem);
-  /* Grand écran : la zone ne dépasse jamais l'écran (sinon l'étiquette sort du champ) */
-  max-height: calc(100dvh - 3.25rem);
-}
-.version-desktop .zone-scroll.grille-shorts:not(.fixe) {
-  /* 4 colonnes 9/16 : (largeur - marges 1.25rem - 3 gouttières) / 4, x2 rangées + 2 gouttières */
-  height: calc((100cqw - 5rem) / 4 * 16 / 9 * 2 + 2.5rem);
-}
-/* Fondu de hauteur fixe : la zone est plus haute que les colonnes du filtre */
-.version-desktop .zone-scroll.a-suivre {
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 7rem), transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 7rem), transparent 100%);
-}
+.cote-a-cote .zone-scroll:not(.fixe) :deep(.video-card:hover) { transform: scale(1.03); }
 
 @media (max-width: 56.25rem) {
   .vue-filtree.cote-a-cote { display: block; }
