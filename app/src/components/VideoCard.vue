@@ -6,6 +6,8 @@ const props = defineProps<{
 }>()
 
 const chargee = ref(false)
+// Prévient le parent quand la vidéo est chargée (sert à précharger les suivantes)
+const emit = defineEmits<{ chargee: [] }>()
 
 function lienEmbed(id: string) {
   return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1`
@@ -21,7 +23,7 @@ function lienEmbed(id: string) {
         allowfullscreen
         frameborder="0"
         loading="lazy"
-        @load="chargee = true">
+        @load="chargee = true; emit('chargee')">
       </iframe>
       <a
         class="overlay"

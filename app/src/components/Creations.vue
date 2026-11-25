@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount, computed } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import VideoCard from './VideoCard.vue'
 import AvisPreview from './AvisPreview.vue'
 import AvisComplet from './AvisComplet.vue'
@@ -90,14 +90,20 @@ const videoLigne3 = computed(() => videosLongues.value.filter((_, i) => i % 3 ==
 
 // Vue par défaut (PC) : nombre de créations affichées avant le bouton « Plus de … »,
 // qui fait apparaître les autres dans la grille (pas de scroll interne).
+// Les autres sont déjà chargées en arrière-plan (classe .precharge) : aucune attente au clic.
 const LIMITE_VIDEOS = 6
 const LIMITE_SHORTS = 8
 const grilleDepliee = reactive({ videos: false, shorts: false })
-const videosGrille = computed(() => {
-  const depliee = montrerShorts.value ? grilleDepliee.shorts : grilleDepliee.videos
-  return depliee ? Videofiltrer.value : Videofiltrer.value.slice(0, montrerShorts.value ? LIMITE_SHORTS : LIMITE_VIDEOS)
-})
-const resteGrille = computed(() => Videofiltrer.value.length - videosGrille.value.length)
+const limiteGrille = computed(() => montrerShorts.value ? LIMITE_SHORTS : LIMITE_VIDEOS)
+const grilleOuverte = computed(() => montrerShorts.value ? grilleDepliee.shorts : grilleDepliee.videos)
+const resteGrille = computed(() => grilleOuverte.value ? 0 : Math.max(0, Videofiltrer.value.length - limiteGrille.value))
+
+// Préchargement intelligent : les créations cachées ne se chargent qu'une fois celles à l'écran prêtes
+const videosChargees = reactive(new Set<string>())
+const precharger = computed(() =>
+  Videofiltrer.value.slice(0, limiteGrille.value).every(v => videosChargees.has(v.IdVideo))
+)
+watch(montrerShorts, () => videosChargees.clear())   // la grille est recréée à chaque onglet
 const deplierGrille = () => { grilleDepliee[montrerShorts.value ? 'shorts' : 'videos'] = true }
 
 // --- Indice de scroll des colonnes (vue filtrée côte à côte) ---
@@ -300,7 +306,11 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
         <!-- version desktop : 6 vidéos / 8 shorts, le bouton fait apparaître les autres -->
         <div v-else class="version-desktop" :key="String(montrerShorts)">
           <div class="video-container" :class="{ 'grille-shorts': montrerShorts }">
-            <VideoCard v-for="v in videosGrille" :key="v.IdVideo" :video="v" />
+            <template v-for="(v, i) in Videofiltrer" :key="v.IdVideo">
+              <VideoCard v-if="i < limiteGrille || grilleOuverte || precharger" :video="v"
+                :class="{ precharge: !grilleOuverte && i >= limiteGrille }"
+                @chargee="videosChargees.add(v.IdVideo)" />
+            </template>
           </div>
           <button v-if="resteGrille > 0" class="btn-plus" @click="deplierGrille">
             {{ montrerShorts ? 'Plus de shorts' : 'Plus de vidéos' }}
@@ -610,6 +620,20 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
 .btn-plus:hover { background: var(--accent); }
 /* Bouton sous la grille PC, centré : au clic, les autres créations apparaissent */
 .btn-plus { display: flex; margin: 0.75rem auto 0; }
+
+/* Créations au-delà de la limite : chargées en avance, invisibles, empilées sur la 1re case
+   (même taille qu'une carte). Au clic, la classe saute et elles prennent leur place sans recharger. */
+.version-desktop .video-container { position: relative; }
+.version-desktop .precharge {
+  position: absolute;
+  grid-column: 1 / 2;   /* fin explicite : avec « auto », une case absolue s'étend jusqu'au bord de la grille */
+  grid-row: 1 / 2;
+  top: 0;
+  left: 0;
+  right: 0;   /* étirée sur toute la case, sinon elle prend la taille par défaut de l'iframe */
+  visibility: hidden;
+  pointer-events: none;
+}
 @keyframes rebond {
   0%, 100% { transform: translate(-50%, 0); }
   50% { transform: translate(-50%, 0.3rem); }
