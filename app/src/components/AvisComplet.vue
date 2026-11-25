@@ -1,15 +1,11 @@
 <script setup lang="ts">
 
-import { ref, reactive, onMounted, onBeforeUnmount, nextTick} from 'vue'
+import { ref, reactive, onMounted, nextTick} from 'vue'
 
 onMounted(async () => {
   const response = await fetch('/api/avis')
   avis.value = await response.json()
   await nextTick()
-
-  mesurerMessages()
-  document.fonts?.ready.then(mesurerMessages)   // la police change la hauteur du texte
-  window.addEventListener('resize', mesurerMessages)
 
   const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -89,34 +85,6 @@ function photoEnErreur(info: Avis) {
   else photosKO.add(info.id)
 }
 
-// Lisibilité : texte replié à 5 lignes, « Lire la suite » seulement s'il dépasse
-const ouverts = reactive(new Set<number>())
-const tronques = reactive(new Set<number>())
-const messages = new Map<number, HTMLElement>()
-
-const lierMessage = (id: number) => (el: unknown) => {
-  if (el) messages.set(id, el as HTMLElement)
-  else messages.delete(id)
-}
-
-function mesurerMessages() {
-  messages.forEach((el, id) => {
-    if (ouverts.has(id)) return
-    if (el.scrollHeight > el.clientHeight + 1) tronques.add(id)
-    else tronques.delete(id)
-  })
-}
-
-function basculer(id: number) {
-  if (ouverts.has(id)) ouverts.delete(id)
-  else ouverts.add(id)
-}
-
-onBeforeUnmount(() => window.removeEventListener('resize', mesurerMessages))
-
-// Un ancien avis importé en SQL garde des apostrophes doublées (J''ai) : on les corrige à l'affichage
-const texteAvis = (message: string) => message.replace(/''/g, "'")
-
 function formatAbonnes(n: string | null): string {
   if (!n) return ''
   const num = Number(n)
@@ -132,11 +100,12 @@ function formatAbonnes(n: string | null): string {
 	<hr class="separateur">
 	<h2 class="titre">Ils me font <span>confiance</span></h2>
 	<div class="grille-avis">
-	<article v-for="(info, i) in avis" :key="`${info.id}-${i}`" class="cards"
+	<a v-for="(info, i) in avis" :key="`${info.id}-${i}`"
+   :href="info.url" target="_blank" class="cards"
    :style="{ '--delay': Math.min(i * 90) + 'ms' }">
 
-		<!-- en-tête : la chaîne, lien vers le profil -->
-		<a :href="info.url" target="_blank" rel="noopener" class="card-entete">
+		<!-- en-tête : la chaîne -->
+		<div class="card-entete">
 		<img v-if="photoAvis(info)" :src="photoAvis(info)!" :alt="info.pseudo" class="avis-logo"
 			referrerpolicy="no-referrer" loading="lazy" @error="photoEnErreur(info)">
 		<div v-else class="avis-logo avatar-vide">{{ info.pseudo.charAt(0).toUpperCase() }}</div>
@@ -154,16 +123,11 @@ function formatAbonnes(n: string | null): string {
     :style="{ color: reseau(info.url).couleur }"
     :title="reseau(info.url).nom"
     aria-hidden="true"></i>
-		</a>
+		</div>
 
 		<span class="avis-etoiles">{{ '★'.repeat(info.note) }}{{ '☆'.repeat(5 - info.note) }}</span>
-		<p class="avis-message" :class="{ ouvert: ouverts.has(info.id) }" :ref="lierMessage(info.id)">{{ texteAvis(info.message) }}</p>
-		<button v-if="tronques.has(info.id) || ouverts.has(info.id)" type="button" class="avis-suite"
-			:aria-expanded="ouverts.has(info.id)" @click="basculer(info.id)">
-			{{ ouverts.has(info.id) ? 'Réduire' : 'Lire la suite' }}
-			<i class="fa-solid" :class="ouverts.has(info.id) ? 'fa-chevron-up' : 'fa-chevron-down'" aria-hidden="true"></i>
-		</button>
-	</article>
+		<p class="avis-message">{{ info.message }}</p>
+	</a>
 	</div>
 </div>
 </template>
@@ -175,20 +139,25 @@ function formatAbonnes(n: string | null): string {
 }
 
 
-/* 3 avis par ligne ; la dernière ligne incomplète reste centrée */
 .grille-avis {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));   /* 3 avis par ligne sur PC */
   gap: 1.25rem;
   padding: 0.625rem;
 }
 
+/* Écran plus étroit : grille d'origine, pour ne pas écraser les cartes */
+@media (max-width: 75rem) {
+  .grille-avis {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
 .cards {
-  flex: 0 1 calc((100% - 2 * 1.25rem) / 3);
-  min-width: 0;
-  box-sizing: border-box;
+  text-decoration: none;
   color: inherit;
+  cursor: pointer;
+  align-items: stretch;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
@@ -246,13 +215,6 @@ function formatAbonnes(n: string | null): string {
 .card-ident {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;   /* sinon le pseudo hérite du centrage de la section */
-}
-
-.card-entete:hover .avis-nom {
-  text-decoration: underline;
-  text-underline-offset: 0.2rem;
 }
 
 .avis-nom {
@@ -286,57 +248,14 @@ function formatAbonnes(n: string | null): string {
   text-align: left;
 }
 
-/* Texte plus grand et plus clair, replié à 5 lignes (plus de scroll caché dans la carte) */
 .avis-message {
-  font-size: 1rem;
-  color: color-mix(in srgb, var(--text-fort) 80%, var(--surface));
-  line-height: 1.65;
+  font-size: 0.95rem;
+  color: var(--text-doux);
+  line-height: 1.5;
   margin: 0;
   text-align: left;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
-  line-clamp: 5;
-  overflow: hidden;
-}
-
-.avis-message.ouvert {
-  display: block;
-  -webkit-line-clamp: unset;
-  line-clamp: unset;
-}
-
-.avis-suite {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  margin-top: -0.25rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: color-mix(in srgb, var(--accent) 60%, white);
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.avis-suite:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.2rem;
-}
-
-.avis-suite i {
-  font-size: 0.7rem;
-}
-
-/* Colonne de contenu plus étroite : 2 par ligne, puis 1 sur petit écran */
-@media (max-width: 81.25rem) {
-  .cards { flex-basis: calc((100% - 1.25rem) / 2); }
-}
-@media (max-width: 40rem) {
-  .cards { flex-basis: 100%; }
+  max-height: 8rem; 
+  overflow-y: auto;
 }
 
 </style>
