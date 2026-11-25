@@ -52,7 +52,7 @@ function allerAuxAvis() {
 <style>
 
 .avis {
-  margin: 0.625rem 1.25rem;
+  margin: 0.625rem 0;   /* toute la largeur de la colonne : dépasse un peu des vidéos */
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
