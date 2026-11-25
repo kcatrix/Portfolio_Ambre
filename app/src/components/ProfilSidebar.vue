@@ -117,7 +117,6 @@ function brillance(e: Event) {
     </div>
     <!-- Contact : l'adresse ouvre la messagerie, le bouton copie l'adresse -->
     <div class="mail-chip-zone">
-      <span class="mail-libelle">Me contacter</span>
       <div class="mail-chip">
         <a href="mailto:ambre.rat2007@gmail.com" class="mail-lien">
           <i class="fa-regular fa-envelope mail-icone"></i>
@@ -335,20 +334,7 @@ function brillance(e: Event) {
 }
 
 .mail-chip-zone {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;  /* libellé aligné sur le début de la pilule */
-  gap: 0.5rem;
   margin-top: 0.3125rem;
-}
-
-.mail-libelle {
-  margin-left: 1.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--accent) 60%, white);  /* accent éclairci : lisible en petit */
 }
 
 .mail-chip {
