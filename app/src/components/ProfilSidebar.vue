@@ -115,14 +115,19 @@ function brillance(e: Event) {
         <i class="fa-brands fa-discord"></i>
       </a>
     </div>
+    <!-- Contact : l'adresse ouvre la messagerie, le bouton copie l'adresse -->
     <div class="mail-chip-zone">
-      <button @click="setClipboard('ambre.rat2007@gmail.com')" class="mail-chip">
-        <i class="fa-regular fa-envelope mail-icone"></i>
-        <span class="mail-adresse">ambre.rat2007@gmail.com</span>
-        <span class="mail-copier" :class="{ copie: copie }">
+      <span class="mail-libelle">Me contacter</span>
+      <div class="mail-chip">
+        <a href="mailto:ambre.rat2007@gmail.com" class="mail-lien">
+          <i class="fa-regular fa-envelope mail-icone"></i>
+          <span class="mail-adresse">ambre.rat2007@gmail.com</span>
+        </a>
+        <button type="button" class="mail-copier" :class="{ copie }" @click="setClipboard('ambre.rat2007@gmail.com')">
           <i :class="copie ? 'fa-solid fa-check' : 'fa-regular fa-copy'"></i>
-        </span>
-      </button>
+          <span aria-live="polite">{{ copie ? 'Copié !' : 'Copier' }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -329,17 +334,70 @@ function brillance(e: Event) {
   font-size: 1.5rem;
 }
 
-.mail-chip {
-  display: inline-flex;     /* les 3 éléments en ligne */
-  align-items: center;      /* alignés verticalement au centre */
-  gap: 0.625rem;                /* espace entre eux */
-  padding: 0.5rem 0.5rem 0.5rem 1rem;
-  background: rgba(var(--accent-rgb), 0.1);   /* accent très clair, s'adapte au fond */
-  border: 0.0625rem solid rgba(var(--accent-rgb), 0.2);
-  border-radius: 62.4375rem;     /* coins ultra-arrondis = pilule */
-  cursor: pointer;
-  font-family: inherit;     /* hérite de la police du parent */
+.mail-chip-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* libellé aligné sur le début de la pilule */
+  gap: 0.5rem;
   margin-top: 0.3125rem;
+}
+
+.mail-libelle {
+  margin-left: 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--accent) 60%, white);  /* accent éclairci : lisible en petit */
+}
+
+.mail-chip {
+  display: inline-flex;     /* adresse + bouton en ligne */
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.375rem 0.375rem 1.125rem;
+  background: rgba(var(--accent-rgb), 0.1);   /* accent très clair, s'adapte au fond */
+  border: 0.0625rem solid rgba(var(--accent-rgb), 0.35);
+  border-radius: 62.4375rem;     /* coins ultra-arrondis = pilule */
+  transition: border-color 0.2s, background 0.2s;
+}
+
+/* L'adresse est un lien mailto : soulignée au survol, avec une bulle explicite */
+.mail-lien {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+}
+.mail-lien:hover .mail-adresse,
+.mail-lien:focus-visible .mail-adresse {
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+.mail-lien::after {
+  content: 'Ouvrir votre messagerie';
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.875rem);
+  z-index: 2;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--surface);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.1);
+  color: var(--text-fort);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateY(-0.25rem);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.mail-lien:hover::after,
+.mail-lien:focus-visible::after {
+  opacity: 1;
+  transform: none;
 }
 
 .liens-externes { opacity: 0; animation: apparition 0.6s ease 0.9s forwards; }
@@ -358,35 +416,41 @@ function brillance(e: Event) {
   color: var(--text-fort);
 }
 
+/* Bouton « Copier » écrit en toutes lettres, « Copié ! » pendant 2 s */
 .mail-copier {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  border-radius: 50%;       /* cercle parfait */
+  gap: 0.375rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: 0.0625rem solid transparent;
+  border-radius: 62.4375rem;
   background: var(--accent);
-  color: var(--on-accent);  /* l'icône hérite de cette couleur */
-  font-size: 0.8125rem;
+  color: var(--on-accent);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: transform 0.2s, background 0.2s, color 0.2s;
 }
 
 .mail-chip:hover {
-  border-color: rgba(var(--accent-rgb), 0.5);
-  transform: translateY(-0.125rem);
+  border-color: rgba(var(--accent-rgb), 0.55);
+  background: rgba(var(--accent-rgb), 0.16);
 }
 
 .mail-copier:hover {
-  transform: scale(1.08);   /* le bouton grossit un peu */
+  transform: scale(1.04);   /* le bouton grossit un peu */
 }
 
-.mail-chip:active {
-  transform: scale(0.98);
+.mail-copier:active {
+  transform: scale(0.97);
 }
 
 .mail-copier.copie {
-  background: var(--succes);
+  background: color-mix(in srgb, var(--succes) 18%, transparent);
+  border-color: color-mix(in srgb, var(--succes) 70%, transparent);
+  color: color-mix(in srgb, var(--succes) 55%, white);
 }
 
 .logiciels {

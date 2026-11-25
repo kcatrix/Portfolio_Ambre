@@ -41,8 +41,6 @@ const categories = computed(() => {
   return Array.from(setCategories)
 })
 
-const menuFiltresOuvert = ref(false)
-
 const filtresActifs = ref<string[]>([])
 
 const toggleFiltre = (cat: string) => {
@@ -67,19 +65,6 @@ const videosApresTags = computed(() => {
     return filtresActifs.value.some(filtreActif => tagsVideo.includes(filtreActif))
   })
 })
-
-// Gère le clic sur le bouton "Filtres" principal
-const gererClicFiltre = () => {
-  if (filtresActifs.value.length > 0) {
-    // S'il y a des filtres actifs, on les efface tous
-    filtresActifs.value = []
-    // Optionnel : on ferme le menu en même temps
-    menuFiltresOuvert.value = false 
-  } else {
-    // Sinon (aucun filtre), on ouvre ou on ferme le menu normalement
-    menuFiltresOuvert.value = !menuFiltresOuvert.value
-  }
-}
 
 // 2. LA SUITE DU CODE SE BASE SUR "videosApresTags" AU LIEU DE "videos"
 
@@ -238,28 +223,20 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
             <span class="resume-compte">{{ videosApresTags.length }} création{{ videosApresTags.length > 1 ? 's' : '' }}</span>
           </div>
         </Transition>
-
-        <button class="btn-filtre" :class="{ 'btn-rouge': filtresActifs.length > 0 }" @click="gererClicFiltre">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
-          </svg>
-          <span >{{ filtresActifs.length > 0 ? 'Effacer filtres' : 'Filtres' }}</span>
-        </button>
       </div>
-      <div class="panneau-wrapper" :class="{ 'ouvert': menuFiltresOuvert }">
-        <div class="panneau-inner">
-          <div class="panneau-pastilles">
-            <button 
-              v-for="cat in categories" 
-              :key="cat" 
-              class="pastille"
-              :class="{ active: filtresActifs.includes(cat) }"
-              @click="toggleFiltre(cat)"
-            >
-              {{ cat }}
-            </button>
-          </div>
-        </div>
+      <!-- Catégories toujours visibles : la croix de la pastille active retire le filtre -->
+      <div class="panneau-pastilles">
+        <button
+          v-for="cat in categories"
+          :key="cat"
+          class="pastille"
+          :class="{ active: filtresActifs.includes(cat) }"
+          :aria-pressed="filtresActifs.includes(cat)"
+          @click="toggleFiltre(cat)"
+        >
+          {{ cat }}
+          <svg v-if="filtresActifs.includes(cat)" class="croix" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
       </div>
 <AvisPreview />
       <Transition name="video" mode="out-in" appear>
@@ -397,6 +374,7 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   grid-template-columns: 1fr auto 1fr; /* 3 colonnes : gauche(vide), centre, droite */
   align-items: center;
   width: 100%;
+  min-height: 2.875rem; /* hauteur du résumé de filtre : les pastilles ne sautent pas */
   margin: 1rem 0 0.5rem 0;
 }
 
@@ -409,30 +387,6 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   padding: 0.3125rem;
   background: var(--surface);
   border-radius: 62.4375rem;
-}
-
-.btn-filtre {
-  justify-self: end; /* Se place au début de la zone droite, juste à côté du segment */
-  margin-right: 10rem;   /* Ajuste cet espace si tu veux le rapprocher ou l'éloigner */
-  
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 2.375rem;
-  padding: 0 1.25rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 62.4375rem;
-  color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-filtre:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .indicateur {
@@ -481,18 +435,6 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
 
 .version-mobile { display: none; }   /* caché par défaut (desktop) */
 
-  /* --- Bouton Effacer en Rouge --- */
-  .btn-filtre.btn-rouge {
-    background: rgba(239, 68, 68, 0.1);      /* Fond rouge très léger */
-    border-color: rgba(239, 68, 68, 0.3);    /* Bordure rouge un peu plus visible */
-    color: #ef4444;                          /* Texte rouge */
-  }
-
-  .btn-filtre.btn-rouge:hover {
-    background: rgba(239, 68, 68, 0.2);      /* S'assombrit légèrement au survol */
-    border-color: rgba(239, 68, 68, 0.5);
-  }
-
 @media (max-width: 56.25rem) {
   /* --- Ajout pour centrer les boutons sur mobile --- */
   .barre-filtres {
@@ -504,24 +446,6 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   .segment {
     grid-column: 2; /* Reste toujours au centre */
   }
-
-  /* On rend le bouton compact et on l'approche du centre */
-  .btn-filtre {
-    grid-column: 3;
-    justify-self: start; /* On le colle à gauche de sa zone (donc près du centre) */
-    margin-right: 0;     /* On annule la marge du desktop */
-    margin-left: 1.75rem;/* Petit espace entre le sélecteur et le bouton */
-    padding: 0;
-    width: 2.375rem;     /* Largeur fixe pour faire un carré/rond */
-    justify-content: center;
-  }
-
-  /* On cache le texte, on ne garde que le SVG */
-  .btn-filtre span {
-    display: none;
-  }
-
-  /* ------------------------------------------------ */
 
   .video-container {
     grid-template-columns: 1fr;
@@ -751,15 +675,19 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   margin-top: 1.7rem;
 }
 
+/* Catégories toujours visibles sous le sélecteur Vidéos / Shorts */
 .panneau-pastilles {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
-  padding: 2rem 1.25rem 1rem 1.25rem;
+  padding: 0.5rem 1.25rem 1rem 1.25rem;
 }
 
 .pastille {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-doux);
@@ -778,39 +706,17 @@ onBeforeUnmount(() => { observateur?.disconnect(); cancelAnimationFrame(pageAnim
   background: var(--accent);
   color: var(--on-accent);
   border-color: var(--accent);
+  padding-right: 0.75rem;
 }
 
-/* --- Animation de hauteur fluide --- */
-.panneau-wrapper {
-  display: grid;
-  grid-template-rows: 0fr; /* Par défaut, la hauteur est écrasée à 0 */
-  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+/* Croix de la pastille active : un clic retire le filtre */
+.croix {
+  flex: none;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.2s;
 }
-
-.panneau-wrapper.ouvert {
-  grid-template-rows: 1fr; /* Quand c'est ouvert, ça prend la hauteur de son contenu */
-}
-
-.panneau-inner {
-  overflow: hidden; /* Empêche le contenu de déborder pendant que ça glisse */
-  min-height: 0;
-}
-
-/* On garde le style des pastilles, mais on ajoute un fondu à l'intérieur de l'ouverture */
-.panneau-pastilles {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 0.50rem 1.25rem 1rem 1.25rem;
-  
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.panneau-wrapper.ouvert .panneau-pastilles {
+.pastille.active:hover .croix {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1.15);
 }
 </style>
